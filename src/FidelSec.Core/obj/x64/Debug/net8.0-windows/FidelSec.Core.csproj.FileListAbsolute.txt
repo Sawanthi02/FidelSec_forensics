@@ -1,0 +1,12 @@
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\bin\x64\Debug\net8.0-windows\FidelSec.Core.deps.json
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\bin\x64\Debug\net8.0-windows\FidelSec.Core.dll
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\bin\x64\Debug\net8.0-windows\FidelSec.Core.pdb
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\FidelSec.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\FidelSec.Core.AssemblyInfoInputs.cache
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\FidelSec.Core.AssemblyInfo.cs
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\FidelSec.Core.csproj.CoreCompileInputs.cache
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\FidelSec.Core.sourcelink.json
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\FidelSec.Core.dll
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\refint\FidelSec.Core.dll
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\FidelSec.Core.pdb
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Core\obj\x64\Debug\net8.0-windows\ref\FidelSec.Core.dll

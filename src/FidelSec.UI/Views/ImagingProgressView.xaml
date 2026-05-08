@@ -1,0 +1,219 @@
+<UserControl x:Class="FidelSec.UI.Views.ImagingProgressView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource BgPrimary}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />  <!-- Toolbar -->
+            <RowDefinition Height="*" />     <!-- Main content -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Toolbar ──────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                Background="{StaticResource BgSecondary}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="12,8">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="▶  Start Acquisition"
+                        Style="{StaticResource PrimaryButton}"
+                        Margin="0,0,8,0"
+                        Name="StartButton"
+                        IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBool}}" />
+                <Button Content="⏸  Pause"
+                        Style="{StaticResource SecondaryButton}"
+                        Margin="0,0,8,0"
+                        Command="{Binding PauseResumeCommand}"
+                        IsEnabled="{Binding IsRunning}" />
+                <Button Content="✕  Cancel"
+                        Style="{StaticResource DangerButton}"
+                        Margin="0,0,8,0"
+                        Command="{Binding CancelImagingCommand}"
+                        IsEnabled="{Binding IsRunning}" />
+                <Button Content="📄  Export Logs"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding ExportLogsCommand}"
+                        IsEnabled="{Binding IsCompleted}" />
+            </StackPanel>
+        </Border>
+
+        <!-- ── Main content ─────────────────────────────────── -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="12">
+
+                <!-- Instructie hint wanneer nog niet gestart -->
+                <Border Background="{StaticResource BgTertiary}" CornerRadius="6"
+                        Padding="10,8" Margin="0,0,0,10"
+                        BorderBrush="{StaticResource SuccessBrush}" BorderThickness="2,0,0,0"
+                        Visibility="{Binding IsRunning, Converter={StaticResource InverseBoolToVisConverter}}">
+                    <StackPanel>
+                        <TextBlock Text="Klaar om te starten?"
+                                   FontSize="12" FontWeight="SemiBold"
+                                   Foreground="{StaticResource SuccessBrush}" Margin="0,0,0,4" />
+                        <TextBlock FontSize="11" Foreground="{StaticResource TextSecondary}"
+                                   TextWrapping="Wrap" LineHeight="18">
+                            <Run Text="1." FontWeight="Bold" Foreground="{StaticResource TextPrimary}" /><Run Text=" Controleer of links een bron geselecteerd is (paars omlijnd schijf)." /><LineBreak />
+                            <Run Text="2." FontWeight="Bold" Foreground="{StaticResource TextPrimary}" /><Run Text=" Controleer of het output-bestand ingesteld is in het middelste paneel." /><LineBreak />
+                            <Run Text="3." FontWeight="Bold" Foreground="{StaticResource TextPrimary}" /><Run Text=" Klik " /><Run Text="▶  Start Acquisition" FontWeight="SemiBold" Foreground="{StaticResource SuccessBrush}" /><Run Text=" hierboven." /><LineBreak />
+                            <Run Text="4." FontWeight="Bold" Foreground="{StaticResource TextPrimary}" /><Run Text=" Na afloop: klik " /><Run Text="📄  Export Logs" FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}" /><Run Text=" om het logboek (chain of custody) op te slaan." />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- State badge -->
+                <Border Background="{StaticResource BgTertiary}" CornerRadius="6"
+                        Padding="12,8" Margin="0,0,0,10">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Status: " Style="{StaticResource SubLabel}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding StateDisplay}"
+                                   FontWeight="Bold" FontSize="14"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Progress bar + % -->
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,6">
+                            <TextBlock Text="Progress" Style="{StaticResource SectionHeader}" />
+                            <TextBlock Text="{Binding PercentComplete, StringFormat={}{0:F1}%}"
+                                       HorizontalAlignment="Right"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       FontWeight="Bold" />
+                        </Grid>
+
+                        <ProgressBar Value="{Binding PercentComplete}"
+                                     Minimum="0" Maximum="100"
+                                     Height="12" Margin="0,0,0,10" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Speed" Style="{StaticResource SubLabel}" />
+                                <TextBlock Text="{Binding SpeedDisplay}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           Foreground="{StaticResource TextPrimary}"
+                                           FontSize="13" FontWeight="SemiBold" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock Text="ETA" Style="{StaticResource SubLabel}" />
+                                <TextBlock Text="{Binding EtaDisplay}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           Foreground="{StaticResource TextPrimary}"
+                                           FontSize="13" FontWeight="SemiBold" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                <TextBlock Text="Elapsed" Style="{StaticResource SubLabel}" />
+                                <TextBlock Text="{Binding ElapsedDisplay}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           Foreground="{StaticResource TextPrimary}"
+                                           FontSize="13" FontWeight="SemiBold" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Separator />
+
+                        <Grid Margin="0,4,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Written" Style="{StaticResource SubLabel}" />
+                                <TextBlock Text="{Binding BytesDisplay}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           Foreground="{StaticResource TextPrimary}" />
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Right">
+                                <TextBlock Text="Bad Sectors" Style="{StaticResource SubLabel}" />
+                                <TextBlock Text="{Binding BadSectorCount}"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           Foreground="{Binding BadSectorCount,
+                                               Converter={StaticResource BadSectorColorConverter}}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Hash display -->
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock Text="Cryptographic Hashes" Style="{StaticResource SectionHeader}" />
+                            <Border HorizontalAlignment="Right" CornerRadius="4"
+                                    Padding="6,2"
+                                    Background="{StaticResource SuccessBrush}"
+                                    Visibility="{Binding HashesVerified, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="✓ VERIFIED" FontSize="10" Foreground="White"
+                                           FontWeight="Bold" />
+                            </Border>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="65" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="MD5" Style="{StaticResource SubLabel}" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" Text="{Binding Md5Hash, Mode=OneWay}"
+                                     IsReadOnly="True" FontFamily="{StaticResource MonoFont}"
+                                     FontSize="11" TextWrapping="Wrap" />
+                        </Grid>
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="65" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="SHA-1" Style="{StaticResource SubLabel}" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" Text="{Binding Sha1Hash, Mode=OneWay}"
+                                     IsReadOnly="True" FontFamily="{StaticResource MonoFont}"
+                                     FontSize="11" TextWrapping="Wrap" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="65" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="SHA-256" Style="{StaticResource SubLabel}" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" Text="{Binding Sha256Hash, Mode=OneWay}"
+                                     IsReadOnly="True" FontFamily="{StaticResource MonoFont}"
+                                     FontSize="11" TextWrapping="Wrap" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Log viewer -->
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Activity Log" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+                        <ListBox ItemsSource="{Binding LogEntries}"
+                                 Height="200"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 Background="{StaticResource BgPrimary}"
+                                 BorderThickness="1"
+                                 BorderBrush="{StaticResource BorderBrush}"
+                                 VirtualizingStackPanel.IsVirtualizing="True"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}"
+                                               FontFamily="{StaticResource MonoFont}"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource TextSecondary}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
