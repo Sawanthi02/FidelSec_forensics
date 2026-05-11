@@ -60,3 +60,5 @@ C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI\obj\Deb
 C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI\obj\Debug\net8.0-windows\FidelSec.UI.pdb
 C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI\obj\Debug\net8.0-windows\FidelSec.UI.genruntimeconfig.cache
 C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI\obj\Debug\net8.0-windows\ref\FidelSec.UI.dll
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI\obj\Debug\net8.0-windows\Controls\ProgressRingControl.baml
+C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI\obj\Debug\net8.0-windows\Controls\ProgressRingControl.g.cs

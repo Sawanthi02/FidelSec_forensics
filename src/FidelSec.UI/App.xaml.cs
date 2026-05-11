@@ -8,6 +8,7 @@ using FidelSec.Infrastructure.DeviceDetection;
 using FidelSec.Infrastructure.DiskAccess;
 using FidelSec.Infrastructure.Hashing;
 using FidelSec.Infrastructure.Logging;
+using FidelSec.UI.Services;
 using FidelSec.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -70,6 +71,9 @@ namespace FidelSec.UI
 
             // Imaging engine
             services.AddSingleton<IImagingEngine, RawImagingEngine>();
+
+            // Touch mode service
+            services.AddSingleton<TouchModeService>();
 
             // ViewModels
             services.AddTransient<MainViewModel>();

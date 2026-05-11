@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FidelSec.UI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+73c718222e1f0fb3bffa40c1512b80d544e1e405")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d963d52169bbe3707a051e8e2743443217e0f677")]
 [assembly: System.Reflection.AssemblyProductAttribute("FidelSec.UI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FidelSec.UI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

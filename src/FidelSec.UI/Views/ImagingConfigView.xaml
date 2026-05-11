@@ -1,176 +1,206 @@
-<UserControl x:Class="FidelSec.UI.Views.ImagingConfigView"
+﻿<UserControl x:Class="FidelSec.UI.Views.ImagingConfigView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:models="clr-namespace:FidelSec.Core.Models;assembly=FidelSec.Core"
              Background="{StaticResource BgPrimary}">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="12" >
+        <StackPanel Margin="14">
 
-            <!-- ── Workflow hint ──────────────────────────────── -->
-            <Border Background="{StaticResource BgTertiary}" CornerRadius="6"
-                    Padding="10,8" Margin="0,0,0,12"
-                    BorderBrush="{StaticResource AccentBrush}" BorderThickness="2,0,0,0">
+            <!--  Workflow hint  -->
+            <Border Background="{StaticResource BgTertiary}" CornerRadius="10"
+                    Padding="14,12" Margin="0,0,0,14"
+                    BorderBrush="{StaticResource AccentBrush}" BorderThickness="3,0,0,0">
                 <StackPanel>
                     <TextBlock Text="Hoe werkt dit scherm?"
-                               FontSize="12" FontWeight="SemiBold"
-                               Foreground="{StaticResource AccentBrush}" Margin="0,0,0,4" />
-                    <TextBlock FontSize="11" Foreground="{StaticResource TextSecondary}"
-                               TextWrapping="Wrap" LineHeight="18">
+                               FontSize="13" FontWeight="Bold"
+                               Foreground="{StaticResource AccentBrush}" Margin="0,0,0,6" />
+                    <TextBlock FontSize="12" Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" LineHeight="20">
                         <Run Text="1." FontWeight="Bold" Foreground="{StaticResource TextPrimary}" />
-                        <Run Text=" Controleer de geselecteerde bron hierboven." />
+                        <Run Text=" Controleer de geselecteerde bron." />
                         <LineBreak />
                         <Run Text="2." FontWeight="Bold" Foreground="{StaticResource TextPrimary}" />
-                        <Run Text=" Klik op " />
+                        <Run Text=" Kies een output-bestand via " />
                         <Run Text="Browse" FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}" />
-                        <Run Text=", navigeer naar een map, typ een bestandsnaam en klik Opslaan. Het programma maakt het bestand zelf aan." />
+                        <Run Text="." />
                         <LineBreak />
                         <Run Text="3." FontWeight="Bold" Foreground="{StaticResource TextPrimary}" />
-                        <Run Text=" Kies hashalgoritmen (MD5 + SHA-256 aanbevolen voor forensisch bewijs)." />
+                        <Run Text=" Kies hashalgoritmen (MD5 + SHA-256 aanbevolen)." />
                         <LineBreak />
                         <Run Text="4." FontWeight="Bold" Foreground="{StaticResource TextPrimary}" />
-                        <Run Text=" Vul minimaal Zaaknummer, Bewijs­nummer en Onderzoeker in. Dit verschijnt in het logboek." />
+                        <Run Text=" Vul zaaknummer, bewijsnummer en onderzoeker in." />
                     </TextBlock>
                 </StackPanel>
             </Border>
 
-            <!-- ── Source Device ──────────────────────────────── -->
-            <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+            <!--  Source Device  -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
                 <StackPanel>
-                    <TextBlock Text="Source Device" Style="{StaticResource SectionHeader}" />
-                    <TextBlock Text="{Binding SourceDevice.DevicePath, FallbackValue='No device selected'}"
-                               Style="{StaticResource MonoValue}" />
+                    <TextBlock Text="Bronapparaat" Style="{StaticResource SectionHeader}" />
+                    <TextBlock Text="{Binding SourceDevice.DevicePath, FallbackValue='Geen apparaat geselecteerd'}"
+                               Style="{StaticResource MonoValue}" FontSize="13"
+                               TextWrapping="Wrap" />
                     <TextBlock Text="{Binding SourceDevice.Model, FallbackValue='--'}"
-                               Style="{StaticResource SubLabel}" Margin="0,2,0,0" />
-                    <TextBlock Margin="0,2,0,0"
-                               Foreground="{StaticResource TextSecondary}" FontSize="11">
-                        <Run Text="{Binding SourceDevice.SizeHuman, FallbackValue='--'}" />
-                        <Run Text=" · " />
-                        <Run Text="{Binding SourceDevice.LogicalSectorSize, FallbackValue='--'}" />
-                        <Run Text=" bytes/sector" />
-                    </TextBlock>
+                               FontSize="12" Foreground="{StaticResource TextSecondary}"
+                               Margin="0,3,0,0" />
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <Border Style="{StaticResource BadgeAccent}" Margin="0,0,6,0">
+                            <TextBlock Text="{Binding SourceDevice.SizeHuman, FallbackValue='--'}"
+                                       FontSize="12" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentBrush}" />
+                        </Border>
+                        <Border Style="{StaticResource BadgeAccent}">
+                            <TextBlock FontSize="12" Foreground="{StaticResource TextSecondary}">
+                                <Run Text="{Binding SourceDevice.LogicalSectorSize, FallbackValue='--'}" />
+                                <Run Text=" B/sector" />
+                            </TextBlock>
+                        </Border>
+                    </StackPanel>
                 </StackPanel>
             </Border>
 
-            <!-- ── Output ─────────────────────────────────────── -->
-            <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+            <!--  Output  -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
                 <StackPanel>
                     <TextBlock Text="Output" Style="{StaticResource SectionHeader}" />
 
-                    <TextBlock Text="Output bestand" Style="{StaticResource SubLabel}" Margin="0,0,0,3" />
-                    <Grid>
+                    <TextBlock Text="Output bestand *" Style="{StaticResource SubLabel}"
+                               Margin="0,0,0,6" />
+                    <Grid Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding OutputPath, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Pad naar het output image-bestand" />
+                        <Button Grid.Column="2"
+                                Content=" Browse"
+                                Style="{StaticResource SecondaryButton}"
+                                MinWidth="100"
+                                ToolTip="Kies een opslaglocatie en bestandsnaam"
+                                Command="{Binding BrowseOutputPathCommand}" />
+                    </Grid>
+                    <TextBlock FontSize="11" FontStyle="Italic"
+                               Foreground="{StaticResource AccentBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,12">
+                         Navigeer naar een map, typ een naam (bijv. usb_image) en klik Opslaan.
+                    </TextBlock>
+
+                    <TextBlock Text="Formaat" Style="{StaticResource SubLabel}" Margin="0,0,0,6" />
+                    <ComboBox ItemsSource="{Binding AvailableFormats}"
+                              SelectedItem="{Binding SelectedFormat}"
+                              Margin="0,0,0,4"
+                              ToolTip="RAW (.dd) = 1-op-1 kopie. E01 = forensisch standaard met metadata." />
+                    <TextBlock FontSize="11" Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" Margin="0,0,0,12">
+                        RAW (.dd) = eenvoudig. E01 = forensisch standaard voor rechtbank.
+                    </TextBlock>
+
+                    <!-- Split image toggle -->
+                    <Grid Margin="0,0,0,6">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding OutputPath, UpdateSourceTrigger=PropertyChanged}"
-                                 Margin="0,0,6,0"
-                                 ToolTip="Het pad waar het image-bestand opgeslagen wordt" />
-                        <Button Grid.Column="1" Content="Browse"
-                                Style="{StaticResource SecondaryButton}"
-                                Padding="10,5"
-                                ToolTip="Kies een map en geef een bestandsnaam op. Het bestand wordt aangemaakt door het programma — je hoeft het niet zelf te maken."
-                                Command="{Binding BrowseOutputPathCommand}" />
+                        <CheckBox Grid.Column="0"
+                                  Content="Splits image in segmenten"
+                                  IsChecked="{Binding SplitImage}" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                    IsEnabled="{Binding SplitImage}">
+                            <TextBox Text="{Binding SplitSizeGb}"
+                                     Width="70" Margin="0,0,6,0"
+                                     ToolTip="GB per segment" />
+                            <TextBlock Text="GB" VerticalAlignment="Center"
+                                       Style="{StaticResource SubLabel}" />
+                        </StackPanel>
                     </Grid>
-                    <TextBlock Margin="0,4,0,0" FontSize="10" FontStyle="Italic"
-                               Foreground="{StaticResource AccentBrush}"
-                               TextWrapping="Wrap"
-                               Text="💡 Browse opent een 'Opslaan als'-venster. Navigeer naar een map, typ een naam (bijv. usb_image) en klik Opslaan. De extensie (.dd of .E01) wordt automatisch toegevoegd." />
-
-                    <TextBlock Text="Formaat" Style="{StaticResource SubLabel}" Margin="0,10,0,3" />
-                    <ComboBox ItemsSource="{Binding AvailableFormats}"
-                              SelectedItem="{Binding SelectedFormat}"
-                              ToolTip="RAW (.dd) = simpel 1-op-1 kopie. E01 = Expert Witness formaat met ingebouwde metadata (aanbevolen voor rechtbank)." />
-                    <TextBlock Margin="0,3,0,0" FontSize="10" Foreground="{StaticResource TextSecondary}"
-                               TextWrapping="Wrap"
-                               Text="RAW (.dd) = directe kopie, eenvoudig. E01 = forensisch standaardformaat met metadata." />
-
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <CheckBox Content="Split image" IsChecked="{Binding SplitImage}"
-                                  VerticalAlignment="Center" />
-                        <TextBox Text="{Binding SplitSizeGb}" Width="50"
-                                 Margin="10,0,4,0"
-                                 IsEnabled="{Binding SplitImage}" />
-                        <TextBlock Text="GB per segment" VerticalAlignment="Center"
-                                   Style="{StaticResource SubLabel}" />
-                    </StackPanel>
                 </StackPanel>
             </Border>
 
-            <!-- ── Hashing ────────────────────────────────────── -->
-            <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+            <!--  Hash Algorithms  -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
                 <StackPanel>
                     <TextBlock Text="Hash Algoritmen" Style="{StaticResource SectionHeader}" />
-                    <TextBlock Margin="0,0,0,8" FontSize="10" Foreground="{StaticResource TextSecondary}"
-                               TextWrapping="Wrap"
-                               Text="Een hash is een digitale vingerafdruk van het image. Hiermee kun je later bewijzen dat het bestand niet gewijzigd is. Selecteer minimaal één algoritme." />
-                    <CheckBox Content="MD5  (snel, veel gebruikt)"
-                              IsChecked="{Binding HashMd5}" Margin="0,0,0,4"
-                              ToolTip="Meest gangbaar. Snel maar cryptografisch minder sterk." />
+                    <TextBlock FontSize="11" Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" Margin="0,0,0,12">
+                        Een hash is een digitale vingerafdruk van het image. Selecteer minimaal n algoritme.
+                    </TextBlock>
+
+                    <CheckBox Content="MD5   snel, veel gebruikt"
+                              IsChecked="{Binding HashMd5}" Margin="0,0,0,8" />
                     <CheckBox Content="SHA-1"
-                              IsChecked="{Binding HashSha1}" Margin="0,0,0,4"
-                              ToolTip="Iets sterker dan MD5." />
-                    <CheckBox Content="SHA-256  (aanbevolen voor rechtbank)"
-                              IsChecked="{Binding HashSha256}" Margin="0,0,0,4"
-                              ToolTip="Sterkste optie. Aanbevolen als forensisch bewijs voor de rechtbank." />
+                              IsChecked="{Binding HashSha1}" Margin="0,0,0,8" />
+                    <CheckBox Content="SHA-256   aanbevolen voor rechtbank"
+                              IsChecked="{Binding HashSha256}" Margin="0,0,0,8" />
                     <Separator />
-                    <CheckBox Content="Verifieer image na acquisitie"
+                    <CheckBox Content="Verifieer image n acquisitie"
                               IsChecked="{Binding VerifyAfterImaging}"
-                              ToolTip="Herleest het opgeslagen image en vergelijkt de hash met de originele bron. Bevestigt dat alles correct opgeslagen is." />
+                              ToolTip="Vergelijkt hash van het opgeslagen image met de bron" />
                 </StackPanel>
             </Border>
 
-            <!-- ── Bad Sector Handling ────────────────────────── -->
-            <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+            <!--  Bad Sector Handling  -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
                 <StackPanel>
                     <TextBlock Text="Slechte Sectoren" Style="{StaticResource SectionHeader}" />
-                    <TextBlock Margin="0,0,0,8" FontSize="10" Foreground="{StaticResource TextSecondary}"
-                               TextWrapping="Wrap"
-                               Text="Als een sector onleesbaar is (beschadigde schijf), bepaal je hier wat er moet gebeuren." />
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                        <TextBlock Text="Herprobeer: " Style="{StaticResource SubLabel}"
-                                   VerticalAlignment="Center" />
-                        <TextBox Text="{Binding BadSectorRetries}" Width="50"
-                                 ToolTip="Aantal keer opnieuw proberen bij een leesfout (standaard: 3)" />
-                        <TextBlock Text=" pogingen" Style="{StaticResource SubLabel}"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
+                    <TextBlock FontSize="11" Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" Margin="0,0,0,12">
+                        Bepaal wat er moet gebeuren bij onleesbare sectoren (beschadigde schijf).
+                    </TextBlock>
+
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Pogingen per slechte sector"
+                                   VerticalAlignment="Center" FontSize="13"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <TextBox Grid.Column="1" Text="{Binding BadSectorRetries}"
+                                 Width="80" HorizontalAlignment="Right"
+                                 ToolTip="Standaard: 3 pogingen" />
+                    </Grid>
+
                     <CheckBox Content="Vul onleesbare sectoren op met nullen (aanbevolen)"
-                              IsChecked="{Binding ZeroFillBadSectors}"
-                              ToolTip="In plaats van het process te stoppen bij een leesfout, worden slechte sectoren gevuld met nullen zodat het image compleet blijft." />
+                              IsChecked="{Binding ZeroFillBadSectors}" />
                 </StackPanel>
             </Border>
 
-            <!-- ── Case Metadata ──────────────────────────────── -->
-            <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+            <!--  Case Metadata  -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
                 <StackPanel>
                     <TextBlock Text="Zaakgegevens" Style="{StaticResource SectionHeader}" />
-                    <TextBlock Margin="0,0,0,8" FontSize="10" Foreground="{StaticResource TextSecondary}"
-                               TextWrapping="Wrap"
-                               Text="Deze informatie wordt opgeslagen in het logboek en bewijst wie, wanneer en waarom dit image aangemaakt is (chain of custody)." />
+                    <TextBlock FontSize="11" Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" Margin="0,0,0,14">
+                        Wordt opgeslagen in het chain-of-custody logboek.
+                    </TextBlock>
 
-                    <TextBlock Text="Zaaknummer *" Style="{StaticResource SubLabel}" Margin="0,0,0,3" />
+                    <TextBlock Text="Zaaknummer *" Style="{StaticResource SubLabel}" Margin="0,0,0,6" />
                     <TextBox Text="{Binding CaseNumber, UpdateSourceTrigger=PropertyChanged}"
-                             ToolTip="Bijv. 2026-001" Margin="0,0,0,8" />
+                             ToolTip="Bijv. 2026-001" Margin="0,0,0,12" />
 
-                    <TextBlock Text="Bewijs­nummer *" Style="{StaticResource SubLabel}" Margin="0,0,0,3" />
+                    <TextBlock Text="Bewijsnummer *" Style="{StaticResource SubLabel}" Margin="0,0,0,6" />
                     <TextBox Text="{Binding EvidenceNumber, UpdateSourceTrigger=PropertyChanged}"
-                             ToolTip="Bijv. E-001" Margin="0,0,0,8" />
+                             ToolTip="Bijv. E-001" Margin="0,0,0,12" />
 
-                    <TextBlock Text="Onderzoeker *" Style="{StaticResource SubLabel}" Margin="0,0,0,3" />
+                    <TextBlock Text="Onderzoeker *" Style="{StaticResource SubLabel}" Margin="0,0,0,6" />
                     <TextBox Text="{Binding ExaminerName, UpdateSourceTrigger=PropertyChanged}"
-                             ToolTip="Uw naam" Margin="0,0,0,8" />
+                             ToolTip="Uw naam" Margin="0,0,0,12" />
 
-                    <TextBlock Text="Organisatie" Style="{StaticResource SubLabel}" Margin="0,0,0,3" />
+                    <TextBlock Text="Organisatie" Style="{StaticResource SubLabel}" Margin="0,0,0,6" />
                     <TextBox Text="{Binding ExaminerOrganization, UpdateSourceTrigger=PropertyChanged}"
-                             ToolTip="Uw bedrijf of afdeling" Margin="0,0,0,8" />
+                             ToolTip="Uw bedrijf of afdeling" Margin="0,0,0,12" />
 
-                    <TextBlock Text="Notities" Style="{StaticResource SubLabel}" Margin="0,0,0,3" />
+                    <TextBlock Text="Notities" Style="{StaticResource SubLabel}" Margin="0,0,0,6" />
                     <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
-                             Height="60" TextWrapping="Wrap"
+                             MinHeight="80" TextWrapping="Wrap"
                              AcceptsReturn="True"
                              VerticalScrollBarVisibility="Auto"
-                             ToolTip="Omschrijving van het bewijs of bijzonderheden" />
+                             VerticalContentAlignment="Top"
+                             ToolTip="Omschrijving of bijzonderheden" />
                 </StackPanel>
             </Border>
 
