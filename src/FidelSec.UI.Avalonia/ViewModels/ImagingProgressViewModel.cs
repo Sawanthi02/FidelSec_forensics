@@ -24,9 +24,16 @@ namespace FidelSec.UI.Avalonia.ViewModels
         [ObservableProperty] private string _bytesDisplay  = "--";
         [ObservableProperty] private long   _badSectorCount;
         [ObservableProperty] private string _stateDisplay = "Inactief";
-        [ObservableProperty] private bool   _isRunning;
-        [ObservableProperty] private bool   _isPaused;
-        [ObservableProperty] private bool   _isCompleted;
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(PauseResumeCommand))]
+        [NotifyCanExecuteChangedFor(nameof(CancelImagingCommand))]
+        private bool _isRunning;
+
+        [ObservableProperty] private bool _isPaused;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ExportLogsCommand))]
+        private bool _isCompleted;
 
         // ── Hash display ──────────────────────────────────────────
         [ObservableProperty] private string _md5Hash           = "--";
@@ -118,19 +125,33 @@ namespace FidelSec.UI.Avalonia.ViewModels
         {
             if (_currentJob is null) return;
 
-            string logDir = System.IO.Path.Combine(
-                System.IO.Path.GetDirectoryName(_currentJob.OutputPath) ?? ".",
-                "FidelSec_Logs");
-            System.IO.Directory.CreateDirectory(logDir);
+            try
+            {
+                string outputDir = System.IO.Path.GetDirectoryName(_currentJob.OutputPath)
+                    ?? System.IO.Directory.GetCurrentDirectory();
+                string logDir = System.IO.Path.Combine(outputDir, "FidelSec_Logs");
+                System.IO.Directory.CreateDirectory(logDir);
 
-            string baseName = $"case_{_currentJob.CaseNumber}_ev_{_currentJob.EvidenceNumber}_{DateTime.UtcNow:yyyyMMdd_HHmmss}";
-            await _forensicLogger.ExportJsonLogAsync(_currentJob.JobId,
-                System.IO.Path.Combine(logDir, baseName + ".json"));
-            await _forensicLogger.ExportTextLogAsync(_currentJob.JobId,
-                System.IO.Path.Combine(logDir, baseName + ".txt"));
+                string baseName = $"case_{Sanitize(_currentJob.CaseNumber)}_ev_{Sanitize(_currentJob.EvidenceNumber)}_{DateTime.UtcNow:yyyyMMdd_HHmmss}";
+                string jsonPath = System.IO.Path.Combine(logDir, baseName + ".json");
+                string txtPath  = System.IO.Path.Combine(logDir, baseName + ".txt");
 
-            AddLog($"Logs geexporteerd naar: {logDir}");
+                await _forensicLogger.ExportJsonLogAsync(_currentJob.JobId, jsonPath);
+                await _forensicLogger.ExportTextLogAsync(_currentJob.JobId, txtPath);
+
+                AddLog($"Chain-of-custody log opgeslagen:");
+                AddLog($"  TXT: {txtPath}");
+                AddLog($"  JSON: {jsonPath}");
+            }
+            catch (Exception ex)
+            {
+                AddLog($"FOUT bij exporteren van logs: {ex.Message}");
+                _logger.LogError(ex, "Log export failed");
+            }
         }
+
+        private static string Sanitize(string s) =>
+            string.Concat(s.Where(c => char.IsLetterOrDigit(c) || c == '-' || c == '_'));
 
         private bool CanStartImaging() => !IsRunning;
 
