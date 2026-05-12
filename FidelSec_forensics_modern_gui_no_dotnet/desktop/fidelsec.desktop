@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=FidelSec Forensic Imager
+Comment=Modern forensic disk imaging GUI
+Exec=pkexec /usr/local/bin/fidelsec-gui
+Terminal=false
+Categories=System;Security;
