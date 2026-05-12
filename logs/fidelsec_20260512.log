@@ -1,0 +1,6 @@
+2026-05-12 11:13:13.497 +02:00 [WRN] WMI hot-plug monitoring could not be started.
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementQuery..ctor()
+   at System.Management.EventQuery..ctor()
+   at System.Management.WqlEventQuery..ctor(String eventClassName, TimeSpan withinInterval, String condition)
+   at FidelSec.Infrastructure.DeviceDetection.WindowsDeviceEnumerationService.StartMonitoring() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WindowsDeviceEnumerationService.cs:line 39
