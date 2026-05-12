@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:FidelSec.UI.Avalonia.ViewModels"
+             x:DataType="vm:ImagingConfigViewModel"
+             x:Class="FidelSec.UI.Avalonia.Views.ImagingConfigView">
+
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="12" Spacing="16">
+
+      <!-- Source device info (when selected) -->
+      <Border Background="{DynamicResource CardBrush}" CornerRadius="8"
+              Padding="16" IsVisible="{Binding SourceDevice, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <StackPanel Spacing="4">
+          <TextBlock Text="Bronapparaat" FontSize="13"
+                     Foreground="{DynamicResource TextSecondaryBrush}" />
+          <TextBlock Text="{Binding SourceDevice.Model}" FontWeight="Bold" FontSize="16" />
+          <TextBlock Text="{Binding SourceDevice.DevicePath}" FontSize="13"
+                     Foreground="{DynamicResource AccentBrush}" />
+          <TextBlock Text="{Binding SourceDevice.SizeHuman}" FontSize="13"
+                     Foreground="{DynamicResource TextSecondaryBrush}" />
+        </StackPanel>
+      </Border>
+
+      <!-- No source placeholder -->
+      <Border Background="{DynamicResource CardBrush}" CornerRadius="8"
+              Padding="16" IsVisible="{Binding SourceDevice, Converter={x:Static ObjectConverters.IsNull}}">
+        <TextBlock Text="Selecteer een apparaat in de apparatenlijst."
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+      </Border>
+
+      <!-- Output path -->
+      <StackPanel Spacing="6">
+        <TextBlock Text="Uitvoerpad" FontWeight="SemiBold" />
+        <Grid ColumnDefinitions="*,120">
+          <TextBox Grid.Column="0" Text="{Binding OutputPath}" Margin="0,0,8,0"
+                   Watermark="/forensics/zaak_001/bewijs.dd" />
+          <Button Grid.Column="1" Command="{Binding BrowseOutputPathCommand}"
+                  Classes="Secondary">Bladeren</Button>
+        </Grid>
+      </StackPanel>
+
+      <!-- Format + split -->
+      <StackPanel Spacing="6">
+        <TextBlock Text="Formaat" FontWeight="SemiBold" />
+        <ComboBox ItemsSource="{Binding AvailableFormats}"
+                  SelectedItem="{Binding SelectedFormat}" HorizontalAlignment="Stretch" />
+      </StackPanel>
+      <CheckBox Content="Image splitsen" IsChecked="{Binding SplitImage}" />
+      <StackPanel Spacing="6" IsEnabled="{Binding SplitImage}">
+        <TextBlock Text="Segmentgrootte (GB)" FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+        <NumericUpDown Value="{Binding SplitSizeGb}" Minimum="1" Maximum="64" />
+      </StackPanel>
+
+      <!-- Hashing -->
+      <StackPanel Spacing="4">
+        <TextBlock Text="Hash-algoritmen" FontWeight="SemiBold" />
+        <CheckBox Content="MD5"    IsChecked="{Binding HashMd5}" />
+        <CheckBox Content="SHA-1"  IsChecked="{Binding HashSha1}" />
+        <CheckBox Content="SHA-256" IsChecked="{Binding HashSha256}" />
+        <CheckBox Content="Verifieer na acquisitie" IsChecked="{Binding VerifyAfterImaging}" />
+      </StackPanel>
+
+      <!-- Bad sectors -->
+      <StackPanel Spacing="4">
+        <TextBlock Text="Slechte sectoren" FontWeight="SemiBold" />
+        <StackPanel Orientation="Horizontal" Spacing="12">
+          <TextBlock Text="Pogingen:" VerticalAlignment="Center" />
+          <NumericUpDown Value="{Binding BadSectorRetries}" Minimum="0" Maximum="10"
+                         Width="100" />
+        </StackPanel>
+        <CheckBox Content="Nul-invulling voor onleesbare sectoren"
+                  IsChecked="{Binding ZeroFillBadSectors}" />
+      </StackPanel>
+
+      <!-- Case metadata -->
+      <TextBlock Text="Zaakgegevens" FontWeight="SemiBold" FontSize="18" />
+
+      <StackPanel Spacing="4">
+        <TextBlock Text="Zaaknummer" FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+        <TextBox Text="{Binding CaseNumber}" Watermark="2024-001" />
+      </StackPanel>
+      <StackPanel Spacing="4">
+        <TextBlock Text="Bewijsnummer" FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+        <TextBox Text="{Binding EvidenceNumber}" Watermark="EV-001" />
+      </StackPanel>
+      <StackPanel Spacing="4">
+        <TextBlock Text="Onderzoeker" FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+        <TextBox Text="{Binding ExaminerName}" Watermark="Naam" />
+      </StackPanel>
+      <StackPanel Spacing="4">
+        <TextBlock Text="Organisatie" FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+        <TextBox Text="{Binding ExaminerOrganization}" Watermark="Team/Bureau" />
+      </StackPanel>
+      <StackPanel Spacing="4">
+        <TextBlock Text="Notities" FontSize="13"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+        <TextBox Text="{Binding Notes}" MinHeight="80" AcceptsReturn="True"
+                 Watermark="Aanvullende opmerkingen..." />
+      </StackPanel>
+
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

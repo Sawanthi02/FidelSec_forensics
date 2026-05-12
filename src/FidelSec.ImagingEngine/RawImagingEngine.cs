@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using FidelSec.Core.Interfaces;
 using FidelSec.Core.Models;
-using FidelSec.Infrastructure.DiskAccess;
 using Microsoft.Extensions.Logging;
 
 namespace FidelSec.ImagingEngine
@@ -26,6 +25,7 @@ namespace FidelSec.ImagingEngine
         private readonly ILogger<RawImagingEngine> _logger;
         private readonly IHashingEngine _hashingEngine;
         private readonly IForensicLogger _forensicLogger;
+        private readonly IDiskReaderFactory _diskReaderFactory;
 
         // Pause/resume gate
         private volatile bool _paused;
@@ -34,11 +34,13 @@ namespace FidelSec.ImagingEngine
         public RawImagingEngine(
             ILogger<RawImagingEngine> logger,
             IHashingEngine hashingEngine,
-            IForensicLogger forensicLogger)
+            IForensicLogger forensicLogger,
+            IDiskReaderFactory diskReaderFactory)
         {
             _logger = logger;
             _hashingEngine = hashingEngine;
             _forensicLogger = forensicLogger;
+            _diskReaderFactory = diskReaderFactory;
         }
 
         /// <inheritdoc/>
@@ -72,18 +74,10 @@ namespace FidelSec.ImagingEngine
                 if (!string.IsNullOrEmpty(outputDir))
                     Directory.CreateDirectory(outputDir);
 
-                // Open the source — use FileDiskReader for regular files (test mode),
-                // Win32DiskReader for physical devices (\\.\PhysicalDriveN)
-                bool isFileSource = !job.SourceDevice.DevicePath.StartsWith(@"\\.\",
-                    StringComparison.OrdinalIgnoreCase);
-
-                IDiskReader diskReader = isFileSource
-                    ? new FileDiskReader(job.SourceDevice.DevicePath,
-                        _logger as ILogger<FileDiskReader>
-                        ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<FileDiskReader>.Instance)
-                    : new Win32DiskReader(job.SourceDevice.DevicePath,
-                        _logger as ILogger<Win32DiskReader>
-                        ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<Win32DiskReader>.Instance);
+                // Use the injected factory — works on Windows (Win32DiskReader) and
+                // Linux (LinuxDiskReader) without any OS-specific code here.
+                IDiskReader diskReader = _diskReaderFactory.Create(
+                    job.SourceDevice.DevicePath);
 
                 using (diskReader)
                 {

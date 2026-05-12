@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-# ============================================================
-#  disk_imager.sh — Interactive raw disk imager
-#  Usage: sudo bash disk_imager.sh
+# FidelSec Forensic Imager — Linux build & run script
+#
+# Usage:
+#   sudo ./disk-imager.sh            # Debug build + run
+#   sudo ./disk-imager.sh --release  # Release build + run
+#   sudo ./disk-imager.sh --build-only
+#   sudo ./disk-imager.sh --test     # Run unit tests
 # ============================================================
  
 set -euo pipefail

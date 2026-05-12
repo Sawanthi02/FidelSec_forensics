@@ -13,16 +13,26 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FidelSec.UI", "src\FidelSec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FidelSec.Tests", "tests\FidelSec.Tests\FidelSec.Tests.csproj", "{55555555-5555-5555-5555-555555555555}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FidelSec.Infrastructure.Linux", "src\FidelSec.Infrastructure.Linux\FidelSec.Infrastructure.Linux.csproj", "{66666666-6666-6666-6666-666666666666}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FidelSec.UI.Avalonia", "src\FidelSec.UI.Avalonia\FidelSec.UI.Avalonia.csproj", "{77777777-7777-7777-7777-777777777777}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
+		Debug|AnyCPU = Debug|AnyCPU
+		Release|AnyCPU = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{11111111-1111-1111-1111-111111111111}.Debug|x64.ActiveCfg = Debug|x64
 		{11111111-1111-1111-1111-111111111111}.Debug|x64.Build.0 = Debug|x64
 		{11111111-1111-1111-1111-111111111111}.Release|x64.ActiveCfg = Release|x64
 		{11111111-1111-1111-1111-111111111111}.Release|x64.Build.0 = Release|x64
+		{11111111-1111-1111-1111-111111111111}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{11111111-1111-1111-1111-111111111111}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{11111111-1111-1111-1111-111111111111}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{11111111-1111-1111-1111-111111111111}.Release|AnyCPU.Build.0 = Release|AnyCPU
 		{22222222-2222-2222-2222-222222222222}.Debug|x64.ActiveCfg = Debug|x64
 		{22222222-2222-2222-2222-222222222222}.Debug|x64.Build.0 = Debug|x64
 		{22222222-2222-2222-2222-222222222222}.Release|x64.ActiveCfg = Release|x64
@@ -31,6 +41,10 @@ Global
 		{33333333-3333-3333-3333-333333333333}.Debug|x64.Build.0 = Debug|x64
 		{33333333-3333-3333-3333-333333333333}.Release|x64.ActiveCfg = Release|x64
 		{33333333-3333-3333-3333-333333333333}.Release|x64.Build.0 = Release|x64
+		{33333333-3333-3333-3333-333333333333}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{33333333-3333-3333-3333-333333333333}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{33333333-3333-3333-3333-333333333333}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{33333333-3333-3333-3333-333333333333}.Release|AnyCPU.Build.0 = Release|AnyCPU
 		{44444444-4444-4444-4444-444444444444}.Debug|x64.ActiveCfg = Debug|x64
 		{44444444-4444-4444-4444-444444444444}.Debug|x64.Build.0 = Debug|x64
 		{44444444-4444-4444-4444-444444444444}.Release|x64.ActiveCfg = Release|x64
@@ -39,5 +53,13 @@ Global
 		{55555555-5555-5555-5555-555555555555}.Debug|x64.Build.0 = Debug|x64
 		{55555555-5555-5555-5555-555555555555}.Release|x64.ActiveCfg = Release|x64
 		{55555555-5555-5555-5555-555555555555}.Release|x64.Build.0 = Release|x64
+		{66666666-6666-6666-6666-666666666666}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{66666666-6666-6666-6666-666666666666}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{66666666-6666-6666-6666-666666666666}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{66666666-6666-6666-6666-666666666666}.Release|AnyCPU.Build.0 = Release|AnyCPU
+		{77777777-7777-7777-7777-777777777777}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{77777777-7777-7777-7777-777777777777}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{77777777-7777-7777-7777-777777777777}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{77777777-7777-7777-7777-777777777777}.Release|AnyCPU.Build.0 = Release|AnyCPU
 	EndGlobalSection
 EndGlobal

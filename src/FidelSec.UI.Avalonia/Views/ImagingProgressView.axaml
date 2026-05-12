@@ -1,0 +1,118 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:FidelSec.UI.Avalonia.ViewModels"
+             x:DataType="vm:ImagingProgressViewModel"
+             x:Class="FidelSec.UI.Avalonia.Views.ImagingProgressView">
+
+  <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto" Margin="12">
+
+    <!-- State banner -->
+    <Border Grid.Row="0" CornerRadius="8"
+            Background="{DynamicResource CardBrush}" Padding="14,10" Margin="0,0,0,8">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Grid.Column="0" Text="{Binding StateDisplay}"
+                   FontSize="20" FontWeight="Bold"
+                   Foreground="{DynamicResource AccentBrush}" />
+        <TextBlock Grid.Column="1" Text="{Binding ElapsedDisplay}"
+                   FontSize="20" Foreground="{DynamicResource TextSecondaryBrush}" />
+      </Grid>
+    </Border>
+
+    <!-- Progress -->
+    <StackPanel Grid.Row="1" Spacing="4" Margin="0,0,0,8">
+      <Grid ColumnDefinitions="*,60">
+        <ProgressBar Grid.Column="0" Value="{Binding PercentComplete}"
+                     Minimum="0" Maximum="100" Height="16" />
+        <TextBlock Grid.Column="1" Text="{Binding PercentComplete, StringFormat={}{0:F1}%}"
+                   FontSize="13" Margin="8,0,0,0"
+                   VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+      </Grid>
+      <TextBlock Text="{Binding BytesDisplay}" FontSize="13"
+                 Foreground="{DynamicResource TextSecondaryBrush}" />
+    </StackPanel>
+
+    <!-- Speed + ETA -->
+    <Grid Grid.Row="2" ColumnDefinitions="*,*" Margin="0,0,0,8">
+      <Border Grid.Column="0" Background="{DynamicResource CardBrush}"
+              CornerRadius="8" Padding="14,10" Margin="0,0,4,0">
+        <StackPanel>
+          <TextBlock Text="Snelheid" FontSize="13"
+                     Foreground="{DynamicResource TextSecondaryBrush}" />
+          <TextBlock Text="{Binding SpeedDisplay}" FontSize="18" FontWeight="Bold" />
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="1" Background="{DynamicResource CardBrush}"
+              CornerRadius="8" Padding="14,10" Margin="4,0,0,0">
+        <StackPanel>
+          <TextBlock Text="Resterende tijd" FontSize="13"
+                     Foreground="{DynamicResource TextSecondaryBrush}" />
+          <TextBlock Text="{Binding EtaDisplay}" FontSize="18" FontWeight="Bold" />
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <!-- Hashes -->
+    <Border Grid.Row="3" Background="{DynamicResource CardBrush}"
+            CornerRadius="8" Padding="14,10" Margin="0,0,0,8">
+      <StackPanel Spacing="4">
+        <TextBlock Text="Hash-waarden" FontWeight="SemiBold" FontSize="15" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="MD5:" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13" />
+          <TextBlock Text="{Binding Md5Hash}" FontFamily="Monospace" FontSize="13" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="SHA-1:" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13" />
+          <TextBlock Text="{Binding Sha1Hash}" FontFamily="Monospace" FontSize="13" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="SHA-256:" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13" />
+          <TextBlock Text="{Binding Sha256Hash}" FontFamily="Monospace" FontSize="13"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+        <TextBlock Text="{Binding VerificationStatus}" FontWeight="Bold"
+                   FontSize="14" Margin="0,4,0,0" />
+      </StackPanel>
+    </Border>
+
+    <!-- Control buttons -->
+    <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="10" Margin="0,0,0,8">
+      <Button Command="{Binding PauseResumeCommand}" Classes="Secondary"
+              MinWidth="140" IsEnabled="{Binding IsRunning}">
+        Pauzeren / Hervatten
+      </Button>
+      <Button Command="{Binding CancelImagingCommand}" Classes="Danger"
+              MinWidth="140" IsEnabled="{Binding IsRunning}">
+        Annuleren
+      </Button>
+      <Button Command="{Binding ExportLogsCommand}" Classes="Secondary"
+              MinWidth="160" IsEnabled="{Binding IsCompleted}">
+        Logs exporteren
+      </Button>
+    </StackPanel>
+
+    <!-- Log entries -->
+    <Border Grid.Row="5" Background="{DynamicResource SurfaceBrush}"
+            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+            CornerRadius="8">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding LogEntries}" Margin="8">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding}" FontFamily="Monospace" FontSize="12"
+                         Foreground="{DynamicResource TextSecondaryBrush}"
+                         TextWrapping="NoWrap" Margin="0,1" />
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Border>
+
+    <!-- Bad sectors -->
+    <TextBlock Grid.Row="6"
+               Text="{Binding BadSectorCount, StringFormat='Slechte sectoren: {0}'}"
+               FontSize="13" Foreground="{DynamicResource WarningBrush}"
+               HorizontalAlignment="Right" Margin="0,4,0,0" />
+
+  </Grid>
+</UserControl>

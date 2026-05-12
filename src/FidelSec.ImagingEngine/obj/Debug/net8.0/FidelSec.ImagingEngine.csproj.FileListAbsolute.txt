@@ -1,0 +1,16 @@
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\bin\Debug\net8.0\FidelSec.ImagingEngine.deps.json
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\bin\Debug\net8.0\FidelSec.ImagingEngine.dll
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\bin\Debug\net8.0\FidelSec.ImagingEngine.pdb
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\bin\Debug\net8.0\FidelSec.Core.dll
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\bin\Debug\net8.0\FidelSec.Core.pdb
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.ImagingEngine.csproj.AssemblyReference.cache
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.ImagingEngine.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.ImagingEngine.AssemblyInfoInputs.cache
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.ImagingEngine.AssemblyInfo.cs
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.ImagingEngine.csproj.CoreCompileInputs.cache
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.ImagingEngine.sourcelink.json
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.AC3880C5.Up2Date
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.ImagingEngine.dll
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\refint\FidelSec.ImagingEngine.dll
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\FidelSec.ImagingEngine.pdb
+c:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.ImagingEngine\obj\Debug\net8.0\ref\FidelSec.ImagingEngine.dll

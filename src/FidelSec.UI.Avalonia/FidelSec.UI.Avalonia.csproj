@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>x64;AnyCPU</Platforms>
+    <AssemblyName>FidelSec.UI.Avalonia</AssemblyName>
+    <RootNamespace>FidelSec.UI.Avalonia</RootNamespace>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.1.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.4" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.4" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.4" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FidelSec.Core\FidelSec.Core.csproj" />
+    <ProjectReference Include="..\FidelSec.ImagingEngine\FidelSec.ImagingEngine.csproj" />
+  </ItemGroup>
+
+  <!-- Copy platform assembly to output dir so runtime reflection can load it.
+       FidelSec.Infrastructure (Windows) must be built separately first.
+       FidelSec.Infrastructure.Linux is net8.0 and only relevant on Linux. -->
+  <!-- Copy Infrastructure + all its dependencies (System.Management etc.) to output -->
+  <Target Name="CopyWindowsInfrastructure" AfterTargets="Build"
+          Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <PropertyGroup>
+      <_InfraDir>$(MSBuildThisFileDirectory)..\FidelSec.Infrastructure\bin\$(Configuration)\net8.0-windows\</_InfraDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <_InfraFiles Include="$(_InfraDir)*.dll" />
+      <_InfraFiles Include="$(_InfraDir)*.pdb" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_InfraFiles)"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(_InfraDir)')" />
+  </Target>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <ProjectReference Include="..\FidelSec.Infrastructure.Linux\FidelSec.Infrastructure.Linux.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+</Project>

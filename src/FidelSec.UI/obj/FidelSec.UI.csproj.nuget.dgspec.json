@@ -17,14 +17,14 @@
           "C:\\Users\\thijm\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net8.0-windows"
+          "net8.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0-windows7.0": {
-            "targetAlias": "net8.0-windows",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -41,8 +41,8 @@
         "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
-        "net8.0-windows7.0": {
-          "targetAlias": "net8.0-windows",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "imports": [
             "net461",
             "net462",
@@ -76,20 +76,17 @@
           "C:\\Users\\thijm\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net8.0-windows"
+          "net8.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0-windows7.0": {
-            "targetAlias": "net8.0-windows",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {
               "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj": {
                 "projectPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj"
-              },
-              "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Infrastructure\\FidelSec.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Infrastructure\\FidelSec.Infrastructure.csproj"
               }
             }
           }
@@ -107,8 +104,8 @@
         "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
-        "net8.0-windows7.0": {
-          "targetAlias": "net8.0-windows",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",

@@ -1,0 +1,252 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.UI.Avalonia\\FidelSec.UI.Avalonia.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj",
+        "projectName": "FidelSec.Core",
+        "projectPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj",
+        "packagesPath": "C:\\Users\\thijm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\thijm\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.ImagingEngine\\FidelSec.ImagingEngine.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.ImagingEngine\\FidelSec.ImagingEngine.csproj",
+        "projectName": "FidelSec.ImagingEngine",
+        "projectPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.ImagingEngine\\FidelSec.ImagingEngine.csproj",
+        "packagesPath": "C:\\Users\\thijm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.ImagingEngine\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\thijm\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj": {
+                "projectPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.UI.Avalonia\\FidelSec.UI.Avalonia.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.UI.Avalonia\\FidelSec.UI.Avalonia.csproj",
+        "projectName": "FidelSec.UI.Avalonia",
+        "projectPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.UI.Avalonia\\FidelSec.UI.Avalonia.csproj",
+        "packagesPath": "C:\\Users\\thijm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.UI.Avalonia\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\thijm\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj": {
+                "projectPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Core\\FidelSec.Core.csproj"
+              },
+              "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.ImagingEngine\\FidelSec.ImagingEngine.csproj": {
+                "projectPath": "C:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.ImagingEngine\\FidelSec.ImagingEngine.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Avalonia": {
+              "target": "Package",
+              "version": "[11.1.4, )"
+            },
+            "Avalonia.Desktop": {
+              "target": "Package",
+              "version": "[11.1.4, )"
+            },
+            "Avalonia.Fonts.Inter": {
+              "target": "Package",
+              "version": "[11.1.4, )"
+            },
+            "Avalonia.ReactiveUI": {
+              "target": "Package",
+              "version": "[11.1.4, )"
+            },
+            "Avalonia.Themes.Fluent": {
+              "target": "Package",
+              "version": "[11.1.4, )"
+            },
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.2, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "Serilog.Extensions.Logging": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,13 @@
 # FidelSec Forensic Imager
 
-Een forensisch disk imaging-tool voor Windows, gebouwd met .NET 8 en WPF. De applicatie maakt bit-exacte schijfkopieën van fysieke schijven via directe Win32-toegang en berekent hashes voor integriteitsverificatie.
+Een forensisch disk imaging-tool voor Windows én Linux, gebouwd met .NET 8. De applicatie maakt bit-exacte schijfkopieën van fysieke schijven en berekent hashes voor integriteitsverificatie.
+
+Er zijn twee UI-varianten:
+
+| UI | Framework | Platform |
+|---|---|---|
+| `FidelSec.UI` | WPF | Windows only |
+| `FidelSec.UI.Avalonia` | Avalonia | Windows + Linux |
 
 ---
 
@@ -8,11 +15,10 @@ Een forensisch disk imaging-tool voor Windows, gebouwd met .NET 8 en WPF. De app
 
 | Vereiste | Versie / Opmerking |
 |---|---|
-| Windows | 10 of 11 (x64) |
 | [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8) | 8.0 of hoger |
-| Beheerdersrechten | Vereist voor toegang tot ruwe schijven |
-
-> De applicatie gebruikt WMI (`Win32_DiskDrive`) en directe Win32-schijftoegang. Hiervoor zijn elevated privileges nodig.
+| Windows 10/11 (x64) | Voor de WPF-versie of Avalonia op Windows |
+| Ubuntu 22.04+ / Debian 12+ (x64) | Voor Avalonia op Linux |
+| Beheerdersrechten | Vereist voor toegang tot ruwe schijven (`\\.\PhysicalDriveN` / `/dev/sdX`) |
 
 ---
 
@@ -31,40 +37,73 @@ cd FidelSec_forensics
 dotnet restore FidelSec.sln
 ```
 
-### 3a. Starten via de build-script (aanbevolen)
+---
 
-De meegeleverde `build.ps1` bouwt en publiceert de applicatie naar de `build/`-map.
+## Avalonia UI — cross-platform (Windows & Linux)
+
+### Windows
+
+Bouw eerst de Windows-infrastructuur (WMI/Win32), daarna de Avalonia UI:
 
 ```powershell
-# Debug build
-.\build.ps1
+# Stap 1: Infrastructure bouwen (vereist voor schijftoegang op Windows)
+dotnet build src\FidelSec.Infrastructure\FidelSec.Infrastructure.csproj -c Debug
 
-# Release build (geoptimaliseerd)
-.\build.ps1 -Release
-
-# Portable build (inclusief .NET runtime, geen installatie nodig)
-.\build.ps1 -Release -SelfContained
-
-# Met unit tests
-.\build.ps1 -Test
+# Stap 2: Avalonia UI bouwen
+dotnet build src\FidelSec.UI.Avalonia\FidelSec.UI.Avalonia.csproj -c Debug
 ```
 
-Start daarna de gepubliceerde `.exe` **als beheerder**:
+Starten als beheerder (**absoluut pad vereist** — een relatief pad werkt niet bij UAC-elevatie):
 
+```powershell
+Start-Process "C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\bin\Debug\net8.0\FidelSec.UI.Avalonia.exe" -Verb RunAs
 ```
-build\Debug\FidelSec.UI.exe   (rechtermuisknop → Als administrator uitvoeren)
+
+> **Waarom absoluut pad?** Bij `-Verb RunAs` start Windows het proces in een andere werkdirectory (`C:\Windows\System32`), waardoor relatieve paden niet werken.
+
+### Linux
+
+```bash
+# Stap 1: Infrastructure en Avalonia UI bouwen
+dotnet build src/FidelSec.Infrastructure.Linux/FidelSec.Infrastructure.Linux.csproj -c Debug
+dotnet build src/FidelSec.UI.Avalonia/FidelSec.UI.Avalonia.csproj -c Debug
+
+# Stap 2: Starten met root-rechten (vereist voor /dev/sdX toegang)
+sudo dotnet run --project src/FidelSec.UI.Avalonia/FidelSec.UI.Avalonia.csproj -c Debug
 ```
 
-### 3b. Starten via `dotnet` (ontwikkeling)
+Of na bouwen de binary direct starten:
 
-`dotnet run` kan de app niet direct als beheerder opstarten vanwege het `requireAdministrator`-manifest. Bouw de applicatie eerst en start de `.exe` dan elevated:
+```bash
+sudo src/FidelSec.UI.Avalonia/bin/Debug/net8.0/FidelSec.UI.Avalonia
+```
+
+---
+
+## WPF UI — Windows only
+
+De originele WPF-interface. Werkt uitsluitend op Windows.
 
 ```powershell
 # Bouwen
 dotnet build src\FidelSec.UI\FidelSec.UI.csproj -c Debug
 
-# Starten als beheerder
-Start-Process "src\FidelSec.UI\bin\Debug\net8.0-windows\FidelSec.UI.exe" -Verb RunAs
+# Starten als beheerder (absoluut pad)
+Start-Process "C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI\bin\Debug\net8.0-windows\FidelSec.UI.exe" -Verb RunAs
+```
+
+Of via de build-script (bouwt en publiceert naar `build/`):
+
+```powershell
+.\build.ps1 -WPF          # Debug WPF build
+.\build.ps1 -WPF -Release # Release WPF build
+.\build.ps1 -Test         # Met unit tests
+```
+
+Start daarna de gepubliceerde `.exe` als beheerder:
+
+```
+build\Debug\WPF\FidelSec.UI.exe   (rechtermuisknop → Als administrator uitvoeren)
 ```
 
 ---
@@ -74,17 +113,20 @@ Start-Process "src\FidelSec.UI\bin\Debug\net8.0-windows\FidelSec.UI.exe" -Verb R
 Logs worden automatisch weggeschreven naar:
 
 ```
-C:\ProgramData\FidelSec\Logs\fidelSec-<datum>.log
+C:\ProgramData\FidelSec\Logs\fidelSec-<datum>.log   (Windows)
+/var/log/fidelsec/fidelSec-<datum>.log               (Linux)
 ```
 
 ---
 
 ## Projectstructuur
 
-| Map | Inhoud |
-|---|---|
-| `src/FidelSec.Core` | Interfaces en domeinmodellen |
-| `src/FidelSec.Infrastructure` | WMI-apparaatdetectie, schijftoegang, hashing, logging |
-| `src/FidelSec.ImagingEngine` | Raw imaging-logica |
-| `src/FidelSec.UI` | WPF-gebruikersinterface (MVVM) |
-| `tests/FidelSec.Tests` | Unit tests |
+| Map | Inhoud | Platform |
+|---|---|---|
+| `src/FidelSec.Core` | Interfaces en domeinmodellen | Alle |
+| `src/FidelSec.ImagingEngine` | Raw imaging-logica | Alle |
+| `src/FidelSec.Infrastructure` | WMI-apparaatdetectie, Win32-schijftoegang, hashing, logging | Windows |
+| `src/FidelSec.Infrastructure.Linux` | lsblk-apparaatdetectie, libc-schijftoegang | Linux |
+| `src/FidelSec.UI.Avalonia` | Avalonia-gebruikersinterface (MVVM, cross-platform) | Windows + Linux |
+| `src/FidelSec.UI` | WPF-gebruikersinterface (MVVM, legacy) | Windows |
+| `tests/FidelSec.Tests` | Unit tests | Alle |

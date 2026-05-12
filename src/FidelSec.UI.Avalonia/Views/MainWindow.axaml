@@ -1,0 +1,95 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FidelSec.UI.Avalonia.ViewModels"
+        xmlns:views="clr-namespace:FidelSec.UI.Avalonia.Views"
+        x:DataType="vm:MainViewModel"
+        x:Class="FidelSec.UI.Avalonia.Views.MainWindow"
+        Title="FidelSec Forensic Imager"
+        MinWidth="1100" MinHeight="700"
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStartupLocation="CenterScreen">
+
+  <Grid RowDefinitions="Auto,*">
+
+    <!-- Top bar -->
+    <Border Grid.Row="0" Background="{DynamicResource SurfaceBrush}"
+            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
+            Padding="20,10">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <!-- Logo / title -->
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+          <TextBlock Text="FidelSec" FontSize="26" FontWeight="Bold"
+                     Foreground="{DynamicResource AccentBrush}" />
+          <TextBlock Text="Forensic Imager" FontSize="26"
+                     Foreground="{DynamicResource TextPrimaryBrush}" />
+        </StackPanel>
+
+        <!-- Status -->
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+          <TextBlock Text="{Binding StatusMessage}" FontSize="14"
+                     Foreground="{DynamicResource TextSecondaryBrush}" />
+          <Button Command="{Binding StartImagingCommand}" MinWidth="180"
+                  IsEnabled="{Binding ImagingConfig.SourceDevice,
+                              Converter={x:Static ObjectConverters.IsNotNull}}">
+            Acquisitie starten
+          </Button>
+        </StackPanel>
+
+        <!-- Platform / elevation badge -->
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10"
+                    VerticalAlignment="Center">
+          <Border Background="{DynamicResource CardBrush}"
+                  CornerRadius="4" Padding="8,4">
+            <TextBlock Text="{Binding PlatformLabel}" FontSize="12"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
+          </Border>
+          <Border Background="{DynamicResource AccentBrush}"
+                  CornerRadius="4" Padding="8,4"
+                  IsVisible="{Binding IsElevated}">
+            <TextBlock Text="{Binding ElevatedLabel}" FontSize="12"
+                       Foreground="White" FontWeight="Bold" />
+          </Border>
+          <Border Background="{DynamicResource DangerBrush}"
+                  CornerRadius="4" Padding="8,4"
+                  IsVisible="{Binding !IsElevated}">
+            <TextBlock Text="GEEN RECHTEN" FontSize="12"
+                       Foreground="White" FontWeight="Bold" />
+          </Border>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Main 3-column layout -->
+    <Grid Grid.Row="1" ColumnDefinitions="320,5,*,5,380">
+
+      <!-- Left: Device list -->
+      <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}"
+              BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
+        <views:DeviceListView DataContext="{Binding DeviceList}" />
+      </Border>
+
+      <!-- Splitter 1 -->
+      <GridSplitter Grid.Column="1" Background="{DynamicResource BorderBrush}"
+                    ResizeDirection="Columns" />
+
+      <!-- Centre: Config -->
+      <Border Grid.Column="2" Background="{DynamicResource BackgroundBrush}">
+        <views:ImagingConfigView DataContext="{Binding ImagingConfig}" />
+      </Border>
+
+      <!-- Splitter 2 -->
+      <GridSplitter Grid.Column="3" Background="{DynamicResource BorderBrush}"
+                    ResizeDirection="Columns" />
+
+      <!-- Right: Progress -->
+      <Border Grid.Column="4" Background="{DynamicResource SurfaceBrush}"
+              BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,0,0,0">
+        <views:ImagingProgressView DataContext="{Binding ImagingProgress}" />
+      </Border>
+
+    </Grid>
+  </Grid>
+</Window>
+
+

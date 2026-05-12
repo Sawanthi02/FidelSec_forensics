@@ -47,8 +47,40 @@ namespace FidelSec.Core.Models
         /// <summary>Whether device is removable (USB, SD)</summary>
         public bool IsRemovable { get; set; }
 
-        /// <summary>Firmware revision string from WMI</summary>
+        /// <summary>Firmware revision string from WMI / hdparm</summary>
         public string FirmwareRevision { get; set; } = string.Empty;
+
+        // ── Cross-platform fields ───────────────────────────────────────────
+
+        /// <summary>
+        /// Linux: mount points from /proc/mounts (e.g. ["/", "/boot"]).
+        /// Windows: drive letters (e.g. ["C:\\", "D:\\"]).
+        /// </summary>
+        public List<string> MountPoints { get; set; } = new();
+
+        /// <summary>True when at least one partition is currently mounted read-write.</summary>
+        public bool IsMounted { get; set; }
+
+        /// <summary>
+        /// Linux: device is mounted read-only (ro) according to /proc/mounts.
+        /// Windows: determined via IOCTL_DISK_IS_WRITABLE.
+        /// </summary>
+        public bool IsMountedReadOnly { get; set; }
+
+        /// <summary>
+        /// Linux: true when a hardware write-blocker is detected
+        /// (sd-protect or hdparm -r reports write-protect).
+        /// Windows: IsReadOnly from WMI.
+        /// </summary>
+        public bool HasWriteBlocker { get; set; }
+
+        /// <summary>
+        /// Windows-only: true when the drive (or a partition) is BitLocker-encrypted.
+        /// </summary>
+        public bool IsBitLockerEncrypted { get; set; }
+
+        /// <summary>Source OS that populated this record (for logging).</summary>
+        public string SourcePlatform { get; set; } = string.Empty;
 
         /// <summary>Human-readable size string (e.g. "500 GB")</summary>
         public string SizeHuman => FormatSize(SizeBytes);

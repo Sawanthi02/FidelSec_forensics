@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "rMPtPLGwsQA=",
+  "success": false,
+  "projectFilePath": "c:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Infrastructure.Linux\\FidelSec.Infrastructure.Linux.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\thijm\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\thijm\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\thijm\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project FidelSec.Infrastructure is not compatible with net8.0 (.NETCoreApp,Version=v8.0). Project FidelSec.Infrastructure supports: net8.0-windows7.0 (.NETCoreApp,Version=v8.0)",
+      "projectPath": "c:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Infrastructure.Linux\\FidelSec.Infrastructure.Linux.csproj",
+      "filePath": "c:\\Users\\thijm\\ID-Projecten\\Forensics\\FidelSec_forensics\\src\\FidelSec.Infrastructure.Linux\\FidelSec.Infrastructure.Linux.csproj",
+      "libraryId": "FidelSec.Infrastructure",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:FidelSec.UI.Avalonia.ViewModels"
+             xmlns:models="clr-namespace:FidelSec.Core.Models;assembly=FidelSec.Core"
+             x:DataType="vm:DeviceListViewModel"
+             x:Class="FidelSec.UI.Avalonia.Views.DeviceListView">
+
+  <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="12">
+
+    <!-- Header -->
+    <TextBlock Grid.Row="0" Text="Apparaten" FontSize="20" FontWeight="Bold"
+               Margin="0,0,0,12" />
+
+    <!-- Scan buttons -->
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+      <Button Command="{Binding ScanDevicesCommand}" IsEnabled="{Binding !IsScanning}"
+              MinWidth="160">
+        Apparaten scannen
+      </Button>
+      <Button Command="{Binding AddTestFileCommand}"
+              Classes="Secondary" MinWidth="160">
+        Testbestand toevoegen
+      </Button>
+    </StackPanel>
+
+    <!-- Device list -->
+    <ListBox Grid.Row="2"
+             ItemsSource="{Binding Devices}"
+             SelectedItem="{Binding SelectedDevice}"
+             ScrollViewer.VerticalScrollBarVisibility="Auto">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="models:PhysicalDevice">
+          <StackPanel Margin="4,6" Spacing="3">
+            <TextBlock Text="{Binding Model}" FontWeight="SemiBold" FontSize="15" />
+            <TextBlock Text="{Binding DevicePath}" FontSize="13"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="{Binding SizeHuman}" FontSize="13"
+                         Foreground="{DynamicResource AccentBrush}" />
+              <TextBlock Text="{Binding InterfaceType}" FontSize="12"
+                         Foreground="{DynamicResource TextSecondaryBrush}" />
+              <TextBlock Text="(Alleen-lezen)" FontSize="12"
+                         Foreground="{DynamicResource SuccessBrush}"
+                         IsVisible="{Binding IsReadOnly}" />
+              <TextBlock Text="(SCHRIJFBAAR)" FontSize="12"
+                         Foreground="{DynamicResource DangerBrush}"
+                         IsVisible="{Binding !IsReadOnly}" />
+              <TextBlock Text="(Gemount)" FontSize="12"
+                         Foreground="{DynamicResource WarningBrush}"
+                         IsVisible="{Binding IsMounted}" />
+            </StackPanel>
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <!-- Status + scan indicator -->
+    <StackPanel Grid.Row="3" Margin="0,8,0,0" Spacing="4">
+      <TextBlock Text="{Binding ScanStatus}"
+                 Foreground="{DynamicResource TextSecondaryBrush}"
+                 FontSize="13" />
+      <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsScanning}" />
+    </StackPanel>
+
+  </Grid>
+</UserControl>

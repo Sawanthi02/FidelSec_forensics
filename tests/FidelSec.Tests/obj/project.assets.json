@@ -1955,7 +1955,6 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "FidelSec.Core": "1.0.0",
-          "FidelSec.Infrastructure": "1.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         },
         "compile": {
