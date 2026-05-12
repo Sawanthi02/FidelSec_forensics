@@ -4,3 +4,174 @@ System.PlatformNotSupportedException: System.Management currently is only suppor
    at System.Management.EventQuery..ctor()
    at System.Management.WqlEventQuery..ctor(String eventClassName, TimeSpan withinInterval, String condition)
    at FidelSec.Infrastructure.DeviceDetection.WindowsDeviceEnumerationService.StartMonitoring() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WindowsDeviceEnumerationService.cs:line 39
+2026-05-12 11:23:23.691 +02:00 [ERR] WMI device scan failed
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+2026-05-12 11:23:23.698 +02:00 [ERR] Device scan failed
+System.InvalidOperationException: Failed to enumerate disk devices via WMI. Ensure the application is running with Administrator privileges.
+ ---> System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+   --- End of inner exception stack trace ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 71
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.<ScanDevicesAsync>b__2_0() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevicesAsync(CancellationToken cancellationToken) in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at FidelSec.UI.Avalonia.ViewModels.DeviceListViewModel.ScanDevicesAsync() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\ViewModels\DeviceListViewModel.cs:line 54
+2026-05-12 11:24:45.345 +02:00 [INF] [11:24:45] Acquisitie gestart: C:\Users\thijm\OneDrive\Afbeeldingen\Screenshots\Screenshot 2026-04-22 135548.png -> C:\Users\thijm\OneDrive\Bijlagen\Test logs\testscreen 1.dd
+2026-05-12 11:24:45.347 +02:00 [INF] [11:24:45] Zaak: 1 | Bewijsnummer: Screen 1 | Onderzoeker: Dev
+2026-05-12 11:24:45.353 +02:00 [INF] [FORENSIC] Acquisition started: Case=1 Evidence=Screen 1
+2026-05-12 11:24:45.354 +02:00 [INF] Imaging job "a53b0d39-5a65-4492-8b4f-1dda3bfe0014" started for C:\Users\thijm\OneDrive\Afbeeldingen\Screenshots\Screenshot 2026-04-22 135548.png
+2026-05-12 11:24:45.369 +02:00 [INF] Opened file source: C:\Users\thijm\OneDrive\Afbeeldingen\Screenshots\Screenshot 2026-04-22 135548.png (13905 bytes)
+2026-05-12 11:24:45.371 +02:00 [INF] Device geometry: 13905 bytes, 512 bytes/sector, 28 sectors
+2026-05-12 11:24:45.414 +02:00 [INF] Imaging complete. Source hashes: MD5=afbd5f630b39665f1efa8570745fb6d3, SHA256=3f7507df484eea9362081c820a1d41aaeaf2e378b480eb9b7f646de115ed8dae
+2026-05-12 11:24:45.419 +02:00 [INF] File hash complete for C:\Users\thijm\OneDrive\Bijlagen\Test logs\testscreen 1.dd: MD5=afbd5f630b39665f1efa8570745fb6d3, SHA256=3f7507df484eea9362081c820a1d41aaeaf2e378b480eb9b7f646de115ed8dae
+2026-05-12 11:24:45.422 +02:00 [INF] Hash verification PASSED
+2026-05-12 11:24:45.427 +02:00 [INF] [FORENSIC] Acquisition COMPLETE: Duration="00:00:00.0681714" Bytes=13905 BadSectors=0
+2026-05-12 11:24:45.440 +02:00 [INF] [11:24:45] Acquisitie VOLTOOID
+2026-05-12 11:24:45.441 +02:00 [INF] [11:24:45] Duur: 00:00:00 | Geschreven: 13,6 KB
+2026-05-12 11:24:45.441 +02:00 [INF] [11:24:45] Slechte sectoren: 0
+2026-05-12 11:24:45.442 +02:00 [INF] [11:24:45] MD5: afbd5f630b39665f1efa8570745fb6d3
+2026-05-12 11:24:45.443 +02:00 [INF] [11:24:45] SHA256: 3f7507df484eea9362081c820a1d41aaeaf2e378b480eb9b7f646de115ed8dae
+2026-05-12 11:24:45.444 +02:00 [INF] [11:24:45] Hash-verificatie: GESLAAGD
+2026-05-12 11:26:33.318 +02:00 [ERR] WMI device scan failed
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+2026-05-12 11:26:33.320 +02:00 [ERR] Device scan failed
+System.InvalidOperationException: Failed to enumerate disk devices via WMI. Ensure the application is running with Administrator privileges.
+ ---> System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+   --- End of inner exception stack trace ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 71
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.<ScanDevicesAsync>b__2_0() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevicesAsync(CancellationToken cancellationToken) in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at FidelSec.UI.Avalonia.ViewModels.DeviceListViewModel.ScanDevicesAsync() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\ViewModels\DeviceListViewModel.cs:line 54
+2026-05-12 11:26:33.828 +02:00 [ERR] WMI device scan failed
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+2026-05-12 11:26:33.830 +02:00 [ERR] Device scan failed
+System.InvalidOperationException: Failed to enumerate disk devices via WMI. Ensure the application is running with Administrator privileges.
+ ---> System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+   --- End of inner exception stack trace ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 71
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.<ScanDevicesAsync>b__2_0() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevicesAsync(CancellationToken cancellationToken) in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at FidelSec.UI.Avalonia.ViewModels.DeviceListViewModel.ScanDevicesAsync() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\ViewModels\DeviceListViewModel.cs:line 54
+2026-05-12 11:26:34.768 +02:00 [ERR] WMI device scan failed
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+2026-05-12 11:26:34.770 +02:00 [ERR] Device scan failed
+System.InvalidOperationException: Failed to enumerate disk devices via WMI. Ensure the application is running with Administrator privileges.
+ ---> System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+   --- End of inner exception stack trace ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 71
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.<ScanDevicesAsync>b__2_0() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevicesAsync(CancellationToken cancellationToken) in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at FidelSec.UI.Avalonia.ViewModels.DeviceListViewModel.ScanDevicesAsync() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\ViewModels\DeviceListViewModel.cs:line 54
+2026-05-12 11:27:49.489 +02:00 [ERR] WMI device scan failed
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+2026-05-12 11:27:49.491 +02:00 [ERR] Device scan failed
+System.InvalidOperationException: Failed to enumerate disk devices via WMI. Ensure the application is running with Administrator privileges.
+ ---> System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+   --- End of inner exception stack trace ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 71
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.<ScanDevicesAsync>b__2_0() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevicesAsync(CancellationToken cancellationToken) in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at FidelSec.UI.Avalonia.ViewModels.DeviceListViewModel.ScanDevicesAsync() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\ViewModels\DeviceListViewModel.cs:line 54
+2026-05-12 11:27:50.761 +02:00 [ERR] WMI device scan failed
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+2026-05-12 11:27:50.763 +02:00 [ERR] Device scan failed
+System.InvalidOperationException: Failed to enumerate disk devices via WMI. Ensure the application is running with Administrator privileges.
+ ---> System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+   --- End of inner exception stack trace ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 71
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.<ScanDevicesAsync>b__2_0() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevicesAsync(CancellationToken cancellationToken) in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at FidelSec.UI.Avalonia.ViewModels.DeviceListViewModel.ScanDevicesAsync() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\ViewModels\DeviceListViewModel.cs:line 54
+2026-05-12 11:27:53.954 +02:00 [ERR] WMI device scan failed
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+2026-05-12 11:27:53.956 +02:00 [ERR] Device scan failed
+System.InvalidOperationException: Failed to enumerate disk devices via WMI. Ensure the application is running with Administrator privileges.
+ ---> System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementObjectSearcher..ctor(String queryString)
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 47
+   --- End of inner exception stack trace ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevices() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 71
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.<ScanDevicesAsync>b__2_0() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevicesAsync(CancellationToken cancellationToken) in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
+   at FidelSec.UI.Avalonia.ViewModels.DeviceListViewModel.ScanDevicesAsync() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\ViewModels\DeviceListViewModel.cs:line 54
+2026-05-12 11:29:14.622 +02:00 [INF] [11:29:14] Acquisitie gestart: C:\Users\thijm\OneDrive\Bijlagen\Test logs\testscreen 1.dd -> C:\Users\thijm\OneDrive\Bijlagen\Test logs\testscreen 1.dd
+2026-05-12 11:29:14.623 +02:00 [INF] [11:29:14] Zaak: 2 | Bewijsnummer: Screen 1 van screen 1 | Onderzoeker: Dev
+2026-05-12 11:29:14.624 +02:00 [INF] [FORENSIC] Acquisition started: Case=2 Evidence=Screen 1 van screen 1
+2026-05-12 11:29:14.625 +02:00 [INF] Imaging job "0ff76e9e-e561-4d11-9ab3-23519e8567d7" started for C:\Users\thijm\OneDrive\Bijlagen\Test logs\testscreen 1.dd
+2026-05-12 11:29:14.626 +02:00 [INF] Opened file source: C:\Users\thijm\OneDrive\Bijlagen\Test logs\testscreen 1.dd (13905 bytes)
+2026-05-12 11:29:14.627 +02:00 [INF] Device geometry: 13905 bytes, 512 bytes/sector, 28 sectors
+2026-05-12 11:29:14.630 +02:00 [INF] Imaging complete. Source hashes: SHA256=3f7507df484eea9362081c820a1d41aaeaf2e378b480eb9b7f646de115ed8dae
+2026-05-12 11:29:14.632 +02:00 [INF] File hash complete for C:\Users\thijm\OneDrive\Bijlagen\Test logs\testscreen 1.dd.E01: SHA256=3f7507df484eea9362081c820a1d41aaeaf2e378b480eb9b7f646de115ed8dae
+2026-05-12 11:29:14.634 +02:00 [INF] Hash verification PASSED
+2026-05-12 11:29:14.635 +02:00 [INF] [FORENSIC] Acquisition COMPLETE: Duration="00:00:00.0083182" Bytes=13905 BadSectors=0
+2026-05-12 11:29:14.638 +02:00 [INF] [11:29:14] Acquisitie VOLTOOID
+2026-05-12 11:29:14.639 +02:00 [INF] [11:29:14] Duur: 00:00:00 | Geschreven: 13,6 KB
+2026-05-12 11:29:14.640 +02:00 [INF] [11:29:14] Slechte sectoren: 0
+2026-05-12 11:29:14.641 +02:00 [INF] [11:29:14] SHA256: 3f7507df484eea9362081c820a1d41aaeaf2e378b480eb9b7f646de115ed8dae
+2026-05-12 11:29:14.641 +02:00 [INF] [11:29:14] Hash-verificatie: GESLAAGD

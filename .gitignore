@@ -1,1 +1,15 @@
+# Build output
+bin/
+obj/
+
+# Logs
+logs/
+*.log
+*.log.*
+**/*.log
+
+# .NET
+*.user
+*.suo
+.vs/
 
