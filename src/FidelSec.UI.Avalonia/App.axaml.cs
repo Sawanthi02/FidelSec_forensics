@@ -24,21 +24,66 @@ namespace FidelSec.UI.Avalonia
 
         public override void OnFrameworkInitializationCompleted()
         {
-            _services = BuildServiceProvider();
+            try
+            {
+                _services = BuildServiceProvider();
+            }
+            catch (Exception ex)
+            {
+                ShowFatalError(ex);
+                return;
+            }
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var vm = _services.GetRequiredService<MainViewModel>();
+                MainViewModel vm;
+                IDeviceEnumerationService enumerator;
+                try
+                {
+                    vm = _services.GetRequiredService<MainViewModel>();
+                    enumerator = _services.GetRequiredService<IDeviceEnumerationService>();
+                }
+                catch (Exception ex)
+                {
+                    ShowFatalError(ex);
+                    return;
+                }
 
-                // Start hot-plug monitoring
-                var enumerator = _services.GetRequiredService<IDeviceEnumerationService>();
-                enumerator.StartMonitoring();
+                var window = new MainWindow { DataContext = vm };
+                desktop.MainWindow = window;
 
-                desktop.MainWindow = new MainWindow { DataContext = vm };
-                desktop.Exit += (_, _) => enumerator.StopMonitoring();
+                window.Opened += (_, _) => enumerator.StartMonitoring();
+                desktop.Exit  += (_, _) => enumerator.StopMonitoring();
             }
 
             base.OnFrameworkInitializationCompleted();
+        }
+
+        private static void ShowFatalError(Exception ex)
+        {
+            // Write to a log file next to the executable so it's always findable.
+            var logPath = Path.Combine(AppContext.BaseDirectory, "startup-error.log");
+            File.WriteAllText(logPath, ex.ToString());
+
+            // Show a plain window with the error message.
+            if (Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var msg = new global::Avalonia.Controls.Window
+                {
+                    Title   = "FidelSec — Startup Error",
+                    Width   = 700,
+                    Height  = 350,
+                    Content = new global::Avalonia.Controls.TextBox
+                    {
+                        Text          = ex.ToString(),
+                        IsReadOnly    = true,
+                        AcceptsReturn = true,
+                        TextWrapping  = global::Avalonia.Media.TextWrapping.Wrap,
+                        Margin        = new global::Avalonia.Thickness(12)
+                    }
+                };
+                desktop.MainWindow = msg;
+            }
         }
 
         private static IServiceProvider BuildServiceProvider()

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FidelSec.ImagingEngine")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d474e8693819d7fe2f160b0ffb4a9f63bc599c7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cee7842f4e3abb04752e7b9ec37135e82818b2af")]
 [assembly: System.Reflection.AssemblyProductAttribute("FidelSec.ImagingEngine")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FidelSec.ImagingEngine")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
