@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=FidelSec Touch
+Comment=Touchscreen forensic imaging GUI
+Exec=pkexec /usr/local/bin/fidelsec-touch
+Terminal=false
+Categories=System;Security;
