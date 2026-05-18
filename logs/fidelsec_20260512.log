@@ -201,3 +201,51 @@ System.InvalidOperationException: Failed to enumerate disk devices via WMI. Ensu
 --- End of stack trace from previous location ---
    at FidelSec.Infrastructure.DeviceDetection.WmiDeviceScanner.ScanDevicesAsync(CancellationToken cancellationToken) in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WmiDeviceScanner.cs:line 30
    at FidelSec.UI.Avalonia.ViewModels.DeviceListViewModel.ScanDevicesAsync() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\ViewModels\DeviceListViewModel.cs:line 54
+2026-05-12 13:34:22.360 +02:00 [WRN] WMI hot-plug monitoring could not be started.
+System.PlatformNotSupportedException: System.Management currently is only supported for Windows desktop applications.
+   at System.Management.ManagementQuery..ctor()
+   at System.Management.EventQuery..ctor()
+   at System.Management.WqlEventQuery..ctor(String eventClassName, TimeSpan withinInterval, String condition)
+   at FidelSec.Infrastructure.DeviceDetection.WindowsDeviceEnumerationService.StartMonitoring() in C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.Infrastructure\DeviceDetection\WindowsDeviceEnumerationService.cs:line 39
+2026-05-12 13:36:01.590 +02:00 [INF] [13:36:01] Acquisitie gestart: C:\Users\thijm\OneDrive\Afbeeldingen\Socket.png -> C:\Users\thijm\OneDrive\Bijlagen\Test logs\image.E01
+2026-05-12 13:36:01.593 +02:00 [INF] [13:36:01] Zaak: 1 | Bewijsnummer: 1 | Onderzoeker: 1
+2026-05-12 13:36:01.599 +02:00 [INF] [FORENSIC] Acquisition started: Case=1 Evidence=1
+2026-05-12 13:36:01.600 +02:00 [INF] Imaging job "dfd82b3b-eaa4-4f9b-8f1a-98c003050b7c" started for C:\Users\thijm\OneDrive\Afbeeldingen\Socket.png
+2026-05-12 13:36:01.611 +02:00 [INF] Opened file source: C:\Users\thijm\OneDrive\Afbeeldingen\Socket.png (117614 bytes)
+2026-05-12 13:36:01.612 +02:00 [INF] Device geometry: 117614 bytes, 512 bytes/sector, 230 sectors
+2026-05-12 13:36:01.637 +02:00 [INF] Imaging complete. Source hashes: MD5=0cb800cafe27d0b908e2f21244debd09, SHA256=816d76b5ff4a19f120ecee0f263c4363ecb6193e125f024995c6757daed08b45
+2026-05-12 13:36:01.644 +02:00 [INF] File hash complete for C:\Users\thijm\OneDrive\Bijlagen\Test logs\image.E01: MD5=0cb800cafe27d0b908e2f21244debd09, SHA256=816d76b5ff4a19f120ecee0f263c4363ecb6193e125f024995c6757daed08b45
+2026-05-12 13:36:01.647 +02:00 [INF] Hash verification PASSED
+2026-05-12 13:36:01.650 +02:00 [INF] [FORENSIC] Acquisition COMPLETE: Duration="00:00:00.0448385" Bytes=117614 BadSectors=0
+2026-05-12 13:36:01.661 +02:00 [INF] [13:36:01] Acquisitie VOLTOOID
+2026-05-12 13:36:01.662 +02:00 [INF] [13:36:01] Duur: 00:00:00 | Geschreven: 114,9 KB
+2026-05-12 13:36:01.663 +02:00 [INF] [13:36:01] Slechte sectoren: 0
+2026-05-12 13:36:01.663 +02:00 [INF] [13:36:01] MD5: 0cb800cafe27d0b908e2f21244debd09
+2026-05-12 13:36:01.664 +02:00 [INF] [13:36:01] SHA256: 816d76b5ff4a19f120ecee0f263c4363ecb6193e125f024995c6757daed08b45
+2026-05-12 13:36:01.665 +02:00 [INF] [13:36:01] Hash-verificatie: GESLAAGD
+2026-05-12 13:36:07.656 +02:00 [INF] Exported JSON log: C:\Users\thijm\OneDrive\Bijlagen\Test logs\FidelSec_Logs\case_1_ev_1_20260512_113607.json
+2026-05-12 13:36:07.660 +02:00 [INF] Exported text log: C:\Users\thijm\OneDrive\Bijlagen\Test logs\FidelSec_Logs\case_1_ev_1_20260512_113607.txt
+2026-05-12 13:36:07.662 +02:00 [INF] [13:36:07] Chain-of-custody log opgeslagen:
+2026-05-12 13:36:07.663 +02:00 [INF] [13:36:07]   TXT: C:\Users\thijm\OneDrive\Bijlagen\Test logs\FidelSec_Logs\case_1_ev_1_20260512_113607.txt
+2026-05-12 13:36:07.664 +02:00 [INF] [13:36:07]   JSON: C:\Users\thijm\OneDrive\Bijlagen\Test logs\FidelSec_Logs\case_1_ev_1_20260512_113607.json
+2026-05-12 14:36:03.728 +02:00 [INF] [14:36:03] Acquisitie gestart: C:\Users\thijm\Downloads\2020JimmyWilson.E01 -> C:\Users\thijm\OneDrive\Bijlagen\Test logs\imagewilson.E01
+2026-05-12 14:36:03.730 +02:00 [INF] [14:36:03] Zaak: 2 | Bewijsnummer: 11234 | Onderzoeker: Dev
+2026-05-12 14:36:03.732 +02:00 [INF] [FORENSIC] Acquisition started: Case=2 Evidence=11234
+2026-05-12 14:36:03.733 +02:00 [INF] Imaging job "8aefbe17-11fa-41ef-b2d6-0d1f494d07b9" started for C:\Users\thijm\Downloads\2020JimmyWilson.E01
+2026-05-12 14:36:03.734 +02:00 [INF] Opened file source: C:\Users\thijm\Downloads\2020JimmyWilson.E01 (309818835 bytes)
+2026-05-12 14:36:03.735 +02:00 [INF] Device geometry: 309818835 bytes, 512 bytes/sector, 605115 sectors
+2026-05-12 14:36:05.128 +02:00 [INF] Imaging complete. Source hashes: MD5=4193cc3bc7111ddf8be7a00677f2a2f4, SHA256=6c18f662744d55e2769d9510f6173f04dab668c42b67ef27b675d22e628b4ed5
+2026-05-12 14:36:06.194 +02:00 [INF] File hash complete for C:\Users\thijm\OneDrive\Bijlagen\Test logs\imagewilson.E01: MD5=4193cc3bc7111ddf8be7a00677f2a2f4, SHA256=6c18f662744d55e2769d9510f6173f04dab668c42b67ef27b675d22e628b4ed5
+2026-05-12 14:36:06.196 +02:00 [INF] Hash verification PASSED
+2026-05-12 14:36:06.197 +02:00 [INF] [FORENSIC] Acquisition COMPLETE: Duration="00:00:02.4629481" Bytes=309818835 BadSectors=0
+2026-05-12 14:36:06.225 +02:00 [INF] [14:36:06] Acquisitie VOLTOOID
+2026-05-12 14:36:06.226 +02:00 [INF] [14:36:06] Duur: 00:00:02 | Geschreven: 295,5 MB
+2026-05-12 14:36:06.227 +02:00 [INF] [14:36:06] Slechte sectoren: 0
+2026-05-12 14:36:06.227 +02:00 [INF] [14:36:06] MD5: 4193cc3bc7111ddf8be7a00677f2a2f4
+2026-05-12 14:36:06.228 +02:00 [INF] [14:36:06] SHA256: 6c18f662744d55e2769d9510f6173f04dab668c42b67ef27b675d22e628b4ed5
+2026-05-12 14:36:06.230 +02:00 [INF] [14:36:06] Hash-verificatie: GESLAAGD
+2026-05-12 14:37:57.319 +02:00 [INF] Exported JSON log: C:\Users\thijm\OneDrive\Bijlagen\Test logs\FidelSec_Logs\case_2_ev_11234_20260512_123757.json
+2026-05-12 14:37:57.333 +02:00 [INF] Exported text log: C:\Users\thijm\OneDrive\Bijlagen\Test logs\FidelSec_Logs\case_2_ev_11234_20260512_123757.txt
+2026-05-12 14:37:57.335 +02:00 [INF] [14:37:57] Chain-of-custody log opgeslagen:
+2026-05-12 14:37:57.336 +02:00 [INF] [14:37:57]   TXT: C:\Users\thijm\OneDrive\Bijlagen\Test logs\FidelSec_Logs\case_2_ev_11234_20260512_123757.txt
+2026-05-12 14:37:57.337 +02:00 [INF] [14:37:57]   JSON: C:\Users\thijm\OneDrive\Bijlagen\Test logs\FidelSec_Logs\case_2_ev_11234_20260512_123757.json

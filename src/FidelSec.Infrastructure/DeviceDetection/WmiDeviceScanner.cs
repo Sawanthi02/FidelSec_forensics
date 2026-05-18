@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 using FidelSec.Core.Interfaces;
 using FidelSec.Core.Models;
 using Microsoft.Extensions.Logging;
@@ -10,13 +15,37 @@ using Microsoft.Extensions.Logging;
 namespace FidelSec.Infrastructure.DeviceDetection
 {
     /// <summary>
-    /// Enumerates physical disk drives using Windows Management Instrumentation (WMI).
-    /// Queries Win32_DiskDrive, Win32_DiskPartition, and Win32_LogicalDisk classes
-    /// to build a complete device model including partitions and file system info.
+    /// Enumerates physical disk drives.
+    /// Primary: WMI Win32_DiskDrive (rich metadata).
+    /// Fallback: brute-force \\.\PhysicalDriveN enumeration via Win32 API.
     /// </summary>
     [SupportedOSPlatform("windows")]
     public class WmiDeviceScanner : IDeviceScanner
     {
+        // ── Win32 for fallback enumeration ───────────────────────────────────
+        private const uint GENERIC_READ  = 0x80000000;
+        private const uint FILE_SHARE_READ  = 0x00000001;
+        private const uint FILE_SHARE_WRITE = 0x00000002;
+        private const uint OPEN_EXISTING = 3;
+        private const uint IOCTL_DISK_GET_DRIVE_GEOMETRY_EX = 0x000700A0;
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern SafeFileHandle CreateFile(
+            string lpFileName, uint dwDesiredAccess, uint dwShareMode,
+            IntPtr lpSec, uint dwCreationDisp, uint dwFlagsAndAttr, IntPtr hTemplate);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool DeviceIoControl(
+            SafeFileHandle hDevice, uint dwIoControlCode,
+            IntPtr lpInBuffer, uint nInBufferSize,
+            IntPtr lpOutBuffer, uint nOutBufferSize,
+            out uint lpBytesReturned, IntPtr lpOverlapped);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct DISK_GEOMETRY { public long Cylinders; public uint MediaType; public uint TracksPerCylinder; public uint SectorsPerTrack; public uint BytesPerSector; }
+        [StructLayout(LayoutKind.Sequential)]
+        private struct DISK_GEOMETRY_EX { public DISK_GEOMETRY Geometry; public long DiskSize; [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1)] public byte[] Data; }
+
         private readonly ILogger<WmiDeviceScanner> _logger;
 
         public WmiDeviceScanner(ILogger<WmiDeviceScanner> logger)
@@ -41,11 +70,11 @@ namespace FidelSec.Infrastructure.DeviceDetection
         {
             var devices = new List<PhysicalDevice>();
 
+            // ── Primary: WMI ──────────────────────────────────────────────────
+            bool wmiSucceeded = false;
             try
             {
-                // Query all physical disk drives via WMI
-                using var searcher = new ManagementObjectSearcher(
-                    @"SELECT * FROM Win32_DiskDrive");
+                using var searcher = new ManagementObjectSearcher(@"SELECT * FROM Win32_DiskDrive");
 
                 foreach (ManagementObject disk in searcher.Get())
                 {
@@ -54,25 +83,148 @@ namespace FidelSec.Infrastructure.DeviceDetection
                         var device = BuildDeviceFromWmi(disk);
                         device.Partitions = GetPartitions(disk);
                         devices.Add(device);
-
-                        _logger.LogInformation(
-                            "Discovered device: {DevicePath} | {Model} | {Size}",
+                        _logger.LogInformation("WMI: {Path} | {Model} | {Size}",
                             device.DevicePath, device.Model, device.SizeHuman);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "Failed to read WMI data for a disk drive entry");
+                        _logger.LogWarning(ex, "Failed to read WMI data for one disk");
+                    }
+                }
+                wmiSucceeded = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "WMI scan failed — will use brute-force fallback");
+            }
+
+            // ── Fallback: brute-force PhysicalDrive0..15 ─────────────────────
+            // Used when WMI returned 0 results or threw (e.g. WMI service unavailable).
+            if (!wmiSucceeded || devices.Count == 0)
+            {
+                _logger.LogInformation("Running brute-force PhysicalDrive enumeration");
+                for (int i = 0; i <= 15; i++)
+                {
+                    string path = $@"\\.\PhysicalDrive{i}";
+                    var device = TryOpenPhysicalDrive(path, i);
+                    if (device is not null)
+                    {
+                        devices.Add(device);
+                        _logger.LogInformation("Fallback found: {Path} | {Size}", path, device.SizeHuman);
+                    }
+                }
+            }
+
+            // ── Supplement: removable drives via DriveInfo ────────────────────
+            // Catches USB sticks / card readers that may not appear in WMI above.
+            try
+            {
+                foreach (var di in DriveInfo.GetDrives())
+                {
+                    if (di.DriveType != DriveType.Removable && di.DriveType != DriveType.Fixed)
+                        continue;
+
+                    string logicalPath = di.Name.TrimEnd('\\', '/'); // e.g. "D:"
+                    // Skip if already covered by a WMI/fallback device
+                    bool alreadyCovered = devices.Any(d =>
+                        d.Partitions.Any(p =>
+                            p.DriveLetter.Equals(logicalPath, StringComparison.OrdinalIgnoreCase)));
+
+                    if (!alreadyCovered && di.DriveType == DriveType.Removable)
+                    {
+                        ulong size = 0;
+                        try { size = (ulong)di.TotalSize; } catch { }
+                        devices.Add(new PhysicalDevice
+                        {
+                            DevicePath = logicalPath,
+                            DeviceId  = logicalPath,
+                            Model     = di.IsReady && !string.IsNullOrEmpty(di.VolumeLabel)
+                                            ? di.VolumeLabel
+                                            : $"Verwisselbaar ({logicalPath})",
+                            InterfaceType = "USB/Removable",
+                            MediaType     = "Removable Media",
+                            SizeBytes     = size,
+                            IsRemovable   = true,
+                            SourcePlatform = "DriveInfo",
+                        });
+                        _logger.LogInformation("DriveInfo removable: {Path}", logicalPath);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "WMI device scan failed");
-                throw new InvalidOperationException("Failed to enumerate disk devices via WMI. " +
-                    "Ensure the application is running with Administrator privileges.", ex);
+                _logger.LogWarning(ex, "DriveInfo supplemental scan failed (non-fatal)");
             }
 
+            if (devices.Count == 0)
+                throw new InvalidOperationException(
+                    "Geen apparaten gevonden. Controleer of de applicatie als Administrator wordt uitgevoerd.");
+
             return devices;
+        }
+
+        /// <summary>
+        /// Brute-force fallback: opens a raw PhysicalDrive handle and reads geometry via IOCTL.
+        /// Returns null if the drive does not exist (error 2 = file not found).
+        /// </summary>
+        private PhysicalDevice? TryOpenPhysicalDrive(string path, int index)
+        {
+            var handle = CreateFile(
+                path, GENERIC_READ,
+                FILE_SHARE_READ | FILE_SHARE_WRITE,
+                IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
+
+            if (handle.IsInvalid)
+                return null;   // drive does not exist at this index
+
+            try
+            {
+                int structSize = Marshal.SizeOf<DISK_GEOMETRY_EX>() + 64;
+                var buf = Marshal.AllocHGlobal(structSize);
+                try
+                {
+                    bool ok = DeviceIoControl(handle, IOCTL_DISK_GET_DRIVE_GEOMETRY_EX,
+                        IntPtr.Zero, 0, buf, (uint)structSize, out _, IntPtr.Zero);
+
+                    ulong sizeBytes = 0;
+                    uint bytesPerSector = 512;
+                    if (ok)
+                    {
+                        var geo = Marshal.PtrToStructure<DISK_GEOMETRY_EX>(buf);
+                        sizeBytes = (ulong)geo.DiskSize;
+                        bytesPerSector = geo.Geometry.BytesPerSector;
+                    }
+
+                    return new PhysicalDevice
+                    {
+                        DevicePath         = path,
+                        DeviceId           = $"PhysicalDrive{index}",
+                        Model              = $"Schijf {index}",
+                        SerialNumber       = "Onbekend",
+                        SizeBytes          = sizeBytes,
+                        LogicalSectorSize  = bytesPerSector,
+                        PhysicalSectorSize = bytesPerSector,
+                        InterfaceType      = "Unknown",
+                        MediaType          = "Unknown",
+                        PartitionStyle     = PartitionStyle.Unknown,
+                        FirmwareRevision   = "Unknown",
+                        SourcePlatform     = "Win32API",
+                    };
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(buf);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "IOCTL failed for {Path}", path);
+                return null;
+            }
+            finally
+            {
+                handle.Dispose();
+            }
         }
 
         private static PhysicalDevice BuildDeviceFromWmi(ManagementObject disk)

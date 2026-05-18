@@ -7,6 +7,8 @@ namespace FidelSec.UI.Avalonia.Views
 {
     public partial class DeviceListView : UserControl
     {
+        private bool _initialScanDone;
+
         public DeviceListView()
         {
             InitializeComponent();
@@ -20,6 +22,14 @@ namespace FidelSec.UI.Avalonia.Views
                 var window = this.FindAncestorOfType<Window>();
                 if (window is not null)
                     vm.SetOwnerWindow(window);
+
+                // Automatically scan on first show so the user sees results without clicking
+                if (!_initialScanDone)
+                {
+                    _initialScanDone = true;
+                    if (vm.ScanDevicesCommand.CanExecute(null))
+                        vm.ScanDevicesCommand.Execute(null);
+                }
             }
         }
     }

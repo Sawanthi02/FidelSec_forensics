@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -60,11 +61,50 @@ namespace FidelSec.UI.Avalonia.ViewModels
             {
                 ScanStatus = $"Scan mislukt: {ex.Message}";
                 _logger.LogError(ex, "Device scan failed");
+                await ShowScanErrorAsync(ex);
             }
             finally
             {
                 IsScanning = false;
             }
+        }
+
+        private async Task ShowScanErrorAsync(Exception ex)
+        {
+            if (_ownerWindow is null) return;
+            var dlg = new Window
+            {
+                Title       = "Apparaten scannen mislukt",
+                Width       = 480,
+                Height      = 220,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Content     = new StackPanel
+                {
+                    Margin   = new global::Avalonia.Thickness(20),
+                    Spacing  = 12,
+                    Children =
+                    {
+                        new TextBlock
+                        {
+                            Text        = "Fout bij scannen van apparaten:",
+                            FontWeight  = FontWeight.Bold,
+                            TextWrapping = TextWrapping.Wrap,
+                        },
+                        new TextBlock
+                        {
+                            Text        = ex.Message,
+                            TextWrapping = TextWrapping.Wrap,
+                        },
+                        new TextBlock
+                        {
+                            Text        = "Tip: start de applicatie opnieuw als Administrator.",
+                            TextWrapping = TextWrapping.Wrap,
+                            Foreground  = Brushes.OrangeRed,
+                        },
+                    }
+                }
+            };
+            await dlg.ShowDialog(_ownerWindow);
         }
 
         [RelayCommand]
