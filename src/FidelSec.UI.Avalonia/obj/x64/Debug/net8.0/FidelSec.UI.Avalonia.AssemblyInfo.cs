@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FidelSec.UI.Avalonia")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fff71463042f25e32f29b7f55473f81a3a7f4ae5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc5fec622d069dc7ec2340cf86c550941e7870a5")]
 [assembly: System.Reflection.AssemblyProductAttribute("FidelSec.UI.Avalonia")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FidelSec.UI.Avalonia")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

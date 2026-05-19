@@ -89,7 +89,7 @@ De originele WPF-interface. Werkt uitsluitend op Windows.
 dotnet build src\FidelSec.UI\FidelSec.UI.csproj -c Debug
 
 # Starten als beheerder (absoluut pad)
-Start-Process "C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI\bin\Debug\net8.0-windows\FidelSec.UI.exe" -Verb RunAs
+Start-Process "C:\src\FidelSec.UI\bin\Debug\net8.0-windows\FidelSec.UI.exe" -Verb RunAs
 ```
 
 Of via de build-script (bouwt en publiceert naar `build/`):
