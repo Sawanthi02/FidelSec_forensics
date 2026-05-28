@@ -92,6 +92,11 @@ namespace FidelSec.ImagingEngine
                     "Device geometry: {TotalBytes} bytes, {SectorSize} bytes/sector, {TotalSectors} sectors",
                     totalBytes, sectorSize, totalSectors);
 
+                _logger.LogInformation(
+                    "Imaging start: device={Device}, output={Output}, format={Format}, bufferSectors={BufSectors}",
+                    job.SourceDevice.DevicePath, job.OutputPath, job.Format,
+                    Math.Max(1, job.BufferSizeBytes / (int)sectorSize));
+
                 // Initialize streaming hasher for on-the-fly hashing
                 using var sourceHasher = _hashingEngine.CreateStreamingHasher(job.HashAlgorithms);
 
@@ -122,6 +127,9 @@ namespace FidelSec.ImagingEngine
                     long bytesWritten = 0;
                     long badSectors = 0;
                     long sector = 0;
+                    // Log sector progress every ~5% of the device or at least every 100 000 sectors
+                    long logIntervalSectors = Math.Max(100_000L, totalSectors / 20);
+                    long nextLogSector = logIntervalSectors;
                     var stopwatch = Stopwatch.StartNew();
                     var lastSpeedCheck = stopwatch.Elapsed;
                     long lastSpeedBytes = 0;
@@ -144,7 +152,6 @@ namespace FidelSec.ImagingEngine
                         int sectorsToRead = (int)Math.Min(sectorsPerBuffer, totalSectors - sector);
                         int bytesToRead = sectorsToRead * (int)sectorSize;
                         int bytesRead = 0;
-                        bool sectorReadOk = false;
 
                         // Retry loop for bad sectors
                         for (int attempt = 0; attempt <= job.BadSectorRetries; attempt++)
@@ -152,7 +159,19 @@ namespace FidelSec.ImagingEngine
                             try
                             {
                                 bytesRead = diskReader.ReadSectors(sector, sectorsToRead, buffer);
-                                sectorReadOk = true;
+
+                                // Guard: a partial read shorter than expected would create a gap
+                                // in the output image. Zero-fill the remainder so offsets stay correct.
+                                if (bytesRead < bytesToRead)
+                                {
+                                    _logger.LogWarning(
+                                        "Partial read at sector {Sector}: expected {Exp} bytes, got {Got}. " +
+                                        "Zero-filling remaining {Fill} bytes to preserve sector alignment.",
+                                        sector, bytesToRead, bytesRead, bytesToRead - bytesRead);
+                                    Array.Clear(buffer, bytesRead, bytesToRead - bytesRead);
+                                    bytesRead = bytesToRead;
+                                    badSectors++;
+                                }
                                 break;
                             }
                             catch (IOException ioEx)
@@ -190,7 +209,22 @@ namespace FidelSec.ImagingEngine
                         // Feed data to hasher (on-the-fly)
                         sourceHasher.FeedData(buffer, 0, bytesRead);
 
-                        // Handle segment rotation for split images
+                        // Periodic sector-level progress log
+                        if (sector >= nextLogSector || sector + sectorsToRead >= totalSectors)
+                        {
+                            long byteOffset = sector * sectorSize;
+                            _logger.LogInformation(
+                                "[SECTOR LOG] sector={Sector}/{Total} offset=0x{Offset:X16} " +
+                                "written={Written} bad={Bad} speed={Speed:F1} MB/s",
+                                sector, totalSectors, byteOffset,
+                                bytesWritten, badSectors,
+                                currentSpeed / 1_048_576.0);
+                            _forensicLogger.LogEvent(job.JobId,
+                                $"Progress: sector {sector}/{totalSectors}, offset 0x{byteOffset:X16}, " +
+                                $"written {bytesWritten} bytes, bad {badSectors}",
+                                ForensicLogLevel.Info);
+                            nextLogSector = sector + logIntervalSectors;
+                        }
                         if (job.SplitImage && currentSegmentSize + bytesRead > job.SplitSegmentSizeBytes)
                         {
                             await currentOutput!.FlushAsync(cancellationToken);
@@ -245,6 +279,23 @@ namespace FidelSec.ImagingEngine
                     result.TotalBytesWritten = bytesWritten;
                     result.BadSectorCount = badSectors;
                     result.OutputFiles = outputFiles;
+
+                    // Sector accounting summary
+                    long expectedBytes = totalSectors * sectorSize;
+                    _logger.LogInformation(
+                        "[SECTOR SUMMARY] sectors_expected={Expected} sectors_written={Written} " +
+                        "bytes_expected={BytesExpected} bytes_written={BytesWritten} bad_sectors={Bad}",
+                        totalSectors, sector, expectedBytes, bytesWritten, badSectors);
+
+                    if (bytesWritten != expectedBytes)
+                        _logger.LogWarning(
+                            "Image size mismatch: expected {Exp} bytes ({Sectors} sectors × {SS} bytes/sector) " +
+                            "but wrote {Got} bytes. This may indicate a read error or device size mismatch.",
+                            expectedBytes, totalSectors, sectorSize, bytesWritten);
+
+                    // MBR/GPT signature check on output image
+                    if (outputFiles.Count > 0)
+                        VerifyOutputImageSignature(outputFiles[0]);
 
                     _logger.LogInformation("Imaging complete. Source hashes: {Hashes}",
                         string.Join(", ", result.SourceHashes.Select(kv => $"{kv.Key}={kv.Value}")));
@@ -399,15 +450,58 @@ namespace FidelSec.ImagingEngine
             await _pauseGate.WaitAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// Reads the first 512 bytes of the output image and verifies the MBR signature.
+        /// Logs a warning if the signature is absent, which indicates a corrupted or empty image.
+        /// Autopsy uses this signature to detect partitioned disks — its absence is the
+        /// direct cause of "Error loading file systems".
+        /// </summary>
+        private void VerifyOutputImageSignature(string imagePath)
+        {
+            try
+            {
+                using var fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                if (fs.Length < 512) { _logger.LogWarning("Output image is smaller than one sector (512 bytes)"); return; }
+
+                byte[] sector0 = new byte[512];
+                int r = fs.Read(sector0, 0, 512);
+                if (r < 512) { _logger.LogWarning("Could not read sector 0 from output image"); return; }
+
+                bool hasMbr = sector0[510] == 0x55 && sector0[511] == 0xAA;
+                bool isGpt  = hasMbr && sector0[450] == 0xEE;
+
+                if (isGpt)
+                    _logger.LogInformation(
+                        "[IMAGE CHECK] Output image sector 0: GPT protective MBR present (0x55 0xAA + type 0xEE). OK.");
+                else if (hasMbr)
+                    _logger.LogInformation(
+                        "[IMAGE CHECK] Output image sector 0: MBR boot signature present (0x55 0xAA). OK.");
+                else
+                    _logger.LogError(
+                        "[IMAGE CHECK] CRITICAL: Output image sector 0 does NOT contain a valid MBR/GPT signature " +
+                        "(offset 510: 0x{B510:X2} 0x{B511:X2}). " +
+                        "Autopsy will report \"Error loading file systems\". " +
+                        "The image was likely corrupted during acquisition (alignment error, zero-fill path triggered).",
+                        sector0[510], sector0[511]);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Post-imaging MBR check on output image failed (non-fatal)");
+            }
+        }
+
         private static Stream OpenOutputSegment(string path, List<string> trackingList)
         {
+            // FileOptions.WriteThrough ensures data is written directly to disk and not held
+            // in the OS write cache. This prevents a partial/corrupt image if the process
+            // crashes before the cache is flushed — critical for forensic integrity.
             var fs = new FileStream(
                 path,
                 FileMode.Create,
                 FileAccess.Write,
                 FileShare.None,
                 bufferSize: 4 * 1024 * 1024,
-                useAsync: true);
+                FileOptions.WriteThrough | FileOptions.SequentialScan);
             trackingList.Add(path);
             return fs;
         }

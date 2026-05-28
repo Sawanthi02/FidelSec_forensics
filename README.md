@@ -56,7 +56,7 @@ dotnet build src\FidelSec.UI.Avalonia\FidelSec.UI.Avalonia.csproj -c Debug
 Starten als beheerder (**absoluut pad vereist** — een relatief pad werkt niet bij UAC-elevatie):
 
 ```powershell
-Start-Process "C:\Users\thijm\ID-Projecten\Forensics\FidelSec_forensics\src\FidelSec.UI.Avalonia\bin\Debug\net8.0\FidelSec.UI.Avalonia.exe" -Verb RunAs
+Start-Process "\src\FidelSec.UI.Avalonia\bin\Debug\net8.0\FidelSec.UI.Avalonia.exe" -Verb RunAs
 ```
 
 > **Waarom absoluut pad?** Bij `-Verb RunAs` start Windows het proces in een andere werkdirectory (`C:\Windows\System32`), waardoor relatieve paden niet werken.

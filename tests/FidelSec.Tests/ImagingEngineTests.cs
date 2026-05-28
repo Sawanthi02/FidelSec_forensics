@@ -6,6 +6,7 @@ using FidelSec.Infrastructure.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
+using System.Threading;
 
 namespace FidelSec.Tests
 {
@@ -19,6 +20,7 @@ namespace FidelSec.Tests
         private readonly HashingEngine _hashingEngine;
         private readonly ForensicLogger _forensicLogger;
         private readonly RawImagingEngine _engine;
+        private readonly Mock<IDiskReaderFactory> _mockFactory;
 
         public ImagingEngineTests()
         {
@@ -30,10 +32,13 @@ namespace FidelSec.Tests
                 NullLogger<ForensicLogger>.Instance,
                 Path.Combine(_tempDir, "logs"));
 
+            _mockFactory = new Mock<IDiskReaderFactory>();
+
             _engine = new RawImagingEngine(
                 NullLogger<RawImagingEngine>.Instance,
                 _hashingEngine,
-                _forensicLogger);
+                _forensicLogger,
+                _mockFactory.Object);
         }
 
         [Fact]
@@ -154,6 +159,106 @@ namespace FidelSec.Tests
             var rng = new Random(12345);
             rng.NextBytes(data);
             return data;
+        }
+
+        [Fact]
+        public async Task Imaging_FullPipeline_BitForBit_WithMbrSignature()
+        {
+            // Arrange: 1 MB virtual disk with valid MBR signature at offset 510-511
+            const int sectorSize = 512;
+            const int sectorCount = 2048; // 1 MB
+            byte[] sourceData = GenerateTestData(sectorSize * sectorCount);
+            // Plant valid MBR boot signature so Autopsy can recognise the image
+            sourceData[510] = 0x55;
+            sourceData[511] = 0xAA;
+
+            string outputPath = Path.Combine(_tempDir, "mbr_test.dd");
+            var mockDevice = CreateMockDevice(sourceData, sectorSize);
+            var job = CreateTestJob(mockDevice, outputPath);
+            job.VerifyAfterImaging = true;
+
+            // Build a mock IDiskReader that serves the byte array sector by sector
+            var mockReader = new Mock<IDiskReader>();
+            mockReader.Setup(r => r.SectorSize).Returns((uint)sectorSize);
+            mockReader.Setup(r => r.TotalSectors).Returns(sectorCount);
+            mockReader.Setup(r => r.TotalBytes).Returns((long)sourceData.Length);
+            mockReader.Setup(r => r.DevicePath).Returns(mockDevice.DevicePath);
+            mockReader.Setup(r => r.ReadSectors(
+                    It.IsAny<long>(), It.IsAny<int>(), It.IsAny<byte[]>()))
+                .Returns((long startSector, int count, byte[] buf) =>
+                {
+                    int bytesToCopy = (int)Math.Min((long)count * sectorSize, sourceData.Length - startSector * sectorSize);
+                    if (bytesToCopy <= 0) return 0;
+                    Buffer.BlockCopy(sourceData, (int)(startSector * sectorSize), buf, 0, bytesToCopy);
+                    return bytesToCopy;
+                });
+
+            _mockFactory.Setup(f => f.Create(mockDevice.DevicePath)).Returns(mockReader.Object);
+
+            // Act
+            var result = await _engine.StartImagingAsync(job);
+
+            // Assert: success
+            Assert.True(result.Success, result.ErrorMessage);
+            Assert.Equal(0, result.BadSectorCount);
+            Assert.Equal(sourceData.Length, result.TotalBytesWritten);
+
+            // Image file must be byte-for-byte identical to source
+            byte[] imageBytes = await File.ReadAllBytesAsync(outputPath);
+            Assert.Equal(sourceData.Length, imageBytes.Length);
+            Assert.Equal(sourceData, imageBytes);
+
+            // MBR signature must be present in the image
+            Assert.Equal(0x55, imageBytes[510]);
+            Assert.Equal(0xAA, imageBytes[511]);
+
+            // Hashes must match
+            Assert.True(result.HashesVerified, "Post-imaging hash verification failed");
+        }
+
+        [Fact]
+        public async Task Imaging_PartialReadAtEnd_PadsWithZerosAndPreservesOffsets()
+        {
+            // Arrange: verify that a partial final read does not shift subsequent sector offsets
+            const int sectorSize = 512;
+            const int sectorCount = 16;
+            byte[] sourceData = new byte[sectorSize * sectorCount];
+            // Fill each sector with its sector number for easy offset verification
+            for (int s = 0; s < sectorCount; s++)
+                Array.Fill(sourceData, (byte)s, s * sectorSize, sectorSize);
+
+            string outputPath = Path.Combine(_tempDir, "partial_read_test.dd");
+            var mockDevice = CreateMockDevice(sourceData, sectorSize);
+            var job = CreateTestJob(mockDevice, outputPath);
+            job.VerifyAfterImaging = false;
+            job.ZeroFillBadSectors = true;
+
+            var mockReader = new Mock<IDiskReader>();
+            mockReader.Setup(r => r.SectorSize).Returns((uint)sectorSize);
+            mockReader.Setup(r => r.TotalSectors).Returns(sectorCount);
+            mockReader.Setup(r => r.TotalBytes).Returns((long)sourceData.Length);
+            mockReader.Setup(r => r.DevicePath).Returns(mockDevice.DevicePath);
+            mockReader.Setup(r => r.ReadSectors(
+                    It.IsAny<long>(), It.IsAny<int>(), It.IsAny<byte[]>()))
+                .Returns((long startSector, int count, byte[] buf) =>
+                {
+                    int bytesToCopy = count * sectorSize;
+                    Buffer.BlockCopy(sourceData, (int)(startSector * sectorSize), buf, 0, bytesToCopy);
+                    return bytesToCopy;
+                });
+
+            _mockFactory.Setup(f => f.Create(mockDevice.DevicePath)).Returns(mockReader.Object);
+
+            // Act
+            var result = await _engine.StartImagingAsync(job);
+
+            // Assert: all sectors written in correct order
+            Assert.True(result.Success);
+            byte[] imageBytes = await File.ReadAllBytesAsync(outputPath);
+            Assert.Equal(sourceData.Length, imageBytes.Length);
+            for (int s = 0; s < sectorCount; s++)
+                Assert.True(imageBytes[s * sectorSize] == (byte)s,
+                    $"Sector {s} first byte should be {s} but got {imageBytes[s * sectorSize]}");
         }
 
         private static PhysicalDevice CreateMockDevice(byte[] data, int sectorSize)
