@@ -29,8 +29,8 @@ namespace FidelSec.Core.Models
         /// <summary>Compression level for E01 (0=none, 9=max)</summary>
         public int CompressionLevel { get; set; } = 0;
 
-        /// <summary>Buffer size for IO operations (default 1 MB)</summary>
-        public int BufferSizeBytes { get; set; } = 1 * 1024 * 1024;
+        /// <summary>Buffer size for IO operations (default 8 MB)</summary>
+        public int BufferSizeBytes { get; set; } = 8 * 1024 * 1024;
 
         /// <summary>Number of retry attempts for bad sectors</summary>
         public int BadSectorRetries { get; set; } = 3;

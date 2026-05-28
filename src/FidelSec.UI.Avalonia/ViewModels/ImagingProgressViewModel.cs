@@ -74,7 +74,12 @@ namespace FidelSec.UI.Avalonia.ViewModels
 
             try
             {
-                var result = await _engine.StartImagingAsync(job, progress, _cts.Token);
+                // Run the imaging engine on a ThreadPool thread so the synchronous
+                // Win32 ReadFile calls never block the Avalonia UI dispatcher.
+                // Progress<T> still marshals every callback back to the UI thread.
+                var result = await Task.Run(
+                    async () => await _engine.StartImagingAsync(job, progress, _cts.Token),
+                    _cts.Token);
                 OnImagingComplete(result);
             }
             catch (OperationCanceledException)

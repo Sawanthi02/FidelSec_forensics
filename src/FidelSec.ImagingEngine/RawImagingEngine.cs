@@ -109,7 +109,12 @@ namespace FidelSec.ImagingEngine
                 // Imaging buffer: must be multiple of sector size and at least 1 sector
                 int sectorsPerBuffer = Math.Max(1, job.BufferSizeBytes / (int)sectorSize);
                 int bufferSize = sectorsPerBuffer * (int)sectorSize;
-                byte[] buffer = new byte[bufferSize];
+
+                // Double-buffer: while buf[readIdx] is being written to the output drive,
+                // the next block is already being read from the source drive into buf[readIdx^1].
+                // Both drives operate in parallel because they are separate physical devices.
+                byte[][] buffers = { new byte[bufferSize], new byte[bufferSize] };
+                int readIdx = 0;
 
                 var outputFiles = new List<string>();
                 Stream? currentOutput = null;
@@ -135,6 +140,15 @@ namespace FidelSec.ImagingEngine
                     long lastSpeedBytes = 0;
                     double currentSpeed = 0;
 
+                    // Double-buffer state: track the pending write task and how many bytes it will commit.
+                    Task pendingWrite = Task.CompletedTask;
+                    int pendingWriteBytes = 0;
+
+                    // Throttle intermediate-hash computation: GetCurrentHash() clones the cryptographic
+                    // state for every algorithm. Doing it every buffer is wasteful — once per second is enough.
+                    var lastHashSnapshot = TimeSpan.Zero;
+                    var cachedHashes = new Dictionary<HashAlgorithmType, string>();
+
                     ReportProgress(progress, new ImagingProgress
                     {
                         JobId = job.JobId,
@@ -158,7 +172,7 @@ namespace FidelSec.ImagingEngine
                         {
                             try
                             {
-                                bytesRead = diskReader.ReadSectors(sector, sectorsToRead, buffer);
+                                bytesRead = diskReader.ReadSectors(sector, sectorsToRead, buffers[readIdx]);
 
                                 // Guard: a partial read shorter than expected would create a gap
                                 // in the output image. Zero-fill the remainder so offsets stay correct.
@@ -168,7 +182,7 @@ namespace FidelSec.ImagingEngine
                                         "Partial read at sector {Sector}: expected {Exp} bytes, got {Got}. " +
                                         "Zero-filling remaining {Fill} bytes to preserve sector alignment.",
                                         sector, bytesToRead, bytesRead, bytesToRead - bytesRead);
-                                    Array.Clear(buffer, bytesRead, bytesToRead - bytesRead);
+                                    Array.Clear(buffers[readIdx], bytesRead, bytesToRead - bytesRead);
                                     bytesRead = bytesToRead;
                                     badSectors++;
                                 }
@@ -186,7 +200,7 @@ namespace FidelSec.ImagingEngine
                                     if (job.ZeroFillBadSectors)
                                     {
                                         // Zero-fill unreadable sector(s)
-                                        Array.Clear(buffer, 0, bytesToRead);
+                                        Array.Clear(buffers[readIdx], 0, bytesToRead);
                                         bytesRead = bytesToRead;
                                         badSectors += sectorsToRead;
                                         _logger.LogWarning(
@@ -206,8 +220,8 @@ namespace FidelSec.ImagingEngine
                             }
                         }
 
-                        // Feed data to hasher (on-the-fly)
-                        sourceHasher.FeedData(buffer, 0, bytesRead);
+                        // Feed data to hasher (on-the-fly, sequential — must happen in sector order).
+                        sourceHasher.FeedData(buffers[readIdx], 0, bytesRead);
 
                         // Periodic sector-level progress log
                         if (sector >= nextLogSector || sector + sectorsToRead >= totalSectors)
@@ -225,6 +239,19 @@ namespace FidelSec.ImagingEngine
                                 ForensicLogLevel.Info);
                             nextLogSector = sector + logIntervalSectors;
                         }
+
+                        // Double-buffer write:
+                        //   1. Await the previous write (started during the last iteration's read).
+                        //      For the very first iteration this is Task.CompletedTask, so no wait.
+                        //   2. Once confirmed complete, account for those bytes.
+                        //   3. Handle segment rotation (needs the current committed size).
+                        //   4. Fire WriteAsync on the CURRENT buffer — this runs while the NEXT
+                        //      iteration's ReadSectors call is in progress (parallel I/O).
+                        await pendingWrite;
+                        bytesWritten += pendingWriteBytes;
+                        currentSegmentSize += pendingWriteBytes;
+                        pendingWriteBytes = 0;
+
                         if (job.SplitImage && currentSegmentSize + bytesRead > job.SplitSegmentSizeBytes)
                         {
                             await currentOutput!.FlushAsync(cancellationToken);
@@ -234,23 +261,31 @@ namespace FidelSec.ImagingEngine
                             currentOutput = OpenOutputSegment(GetSegmentPath(), outputFiles);
                         }
 
-                        await currentOutput!.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
-                        bytesWritten += bytesRead;
-                        currentSegmentSize += bytesRead;
+                        // Start the async write and immediately move on to the next read iteration.
+                        // buffers[readIdx ^ 1] will be used for that read, so buffers[readIdx] is safe
+                        // to write from until we next await pendingWrite.
+                        pendingWrite = currentOutput!.WriteAsync(buffers[readIdx].AsMemory(0, bytesRead), cancellationToken).AsTask();
+                        pendingWriteBytes = bytesRead;
+
+                        readIdx ^= 1;
                         sector += sectorsToRead;
 
-                        // Speed calculation (update every 500ms)
+                        // Speed calculation (update every 500ms).
+                        // Use bytesWritten + pendingWriteBytes as the "effective" count so that
+                        // in-flight bytes are reflected in speed/ETA even before the write completes.
                         var elapsed = stopwatch.Elapsed;
                         if ((elapsed - lastSpeedCheck).TotalMilliseconds >= 500)
                         {
+                            long effectiveWritten = bytesWritten + pendingWriteBytes;
                             double intervalSec = (elapsed - lastSpeedCheck).TotalSeconds;
-                            currentSpeed = (bytesWritten - lastSpeedBytes) / intervalSec;
-                            lastSpeedBytes = bytesWritten;
+                            currentSpeed = (effectiveWritten - lastSpeedBytes) / intervalSec;
+                            lastSpeedBytes = effectiveWritten;
                             lastSpeedCheck = elapsed;
                         }
 
+                        long approxBytesWritten = bytesWritten + pendingWriteBytes;
                         double remaining = currentSpeed > 0
-                            ? (totalBytes - bytesWritten) / currentSpeed
+                            ? (totalBytes - approxBytesWritten) / currentSpeed
                             : 0;
 
                         // Report progress
@@ -258,17 +293,29 @@ namespace FidelSec.ImagingEngine
                         {
                             JobId = job.JobId,
                             State = ImagingState.Imaging,
-                            BytesRead = bytesWritten,
+                            BytesRead = approxBytesWritten,
                             TotalBytes = totalBytes,
                             SpeedBytesPerSecond = currentSpeed,
                             EstimatedTimeRemaining = TimeSpan.FromSeconds(remaining),
                             Elapsed = elapsed,
                             BadSectorCount = badSectors,
                             CurrentSector = sector,
-                            IntermediateHashes = sourceHasher.GetIntermediateValues()
+                            IntermediateHashes = cachedHashes
                         };
                         ReportProgress(progress, prog);
+
+                        // Update the displayed intermediate hashes at most once per second.
+                        if ((elapsed - lastHashSnapshot).TotalSeconds >= 1.0)
+                        {
+                            cachedHashes = sourceHasher.GetIntermediateValues();
+                            lastHashSnapshot = elapsed;
+                        }
                     }
+
+                    // Flush the last pending write before finalizing.
+                    await pendingWrite;
+                    bytesWritten += pendingWriteBytes;
+                    currentSegmentSize += pendingWriteBytes;
 
                     await currentOutput!.FlushAsync(cancellationToken);
                     currentOutput.Dispose();
